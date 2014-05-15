@@ -2,7 +2,7 @@
 UseVimball
 finish
 plugin/fontcatalog.vim	[[[1
-502
+505
 " Vim Font Catalog Plugin
 " Description: Simple Font Catalog.
 " Version: 1.0
@@ -180,23 +180,24 @@ fun s:FontCatalogRemoveCategory(name)
 
     call delete(l:fileList[0])
 endfun  " >>>
-" s:FontCatalogListCategories() <<<
+" s:FontCatalogListCategories(...) <<<
 " List the categories of the current font.
+" @param ... Font specification or nothing.
 " @returns A List object with the category names.
 " ============================================================================
-fun s:FontCatalogListCategories()
+fun s:FontCatalogListCategories(...)
     if !s:checkConfig()
         return ''
     endif
 
-    let l:fontSpec = &guifont
+    let l:fontSpec = a:0 ? a:1 : &guifont
     let l:foundCategories = s:fontListCategories(l:fontSpec)
 
     if empty(l:foundCategories)
         return '"'.l:fontSpec.'" not found in font catalog'
     else
         call sort(l:foundCategories)
-        return join(l:foundCategories, '  ')
+        return '-> Categories for "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
 " s:FontCatalogFonts(...) <<<
@@ -242,22 +243,19 @@ fun s:FontCatalogFonts(...)
 
     return join(l:fontList, "\n")
 endfun  " >>>
-" s:FontCatalogSet(spec) <<<
+" s:FontCatalogSet(...) <<<
 " Sets a font to be used.
-" @param spec The font specification.
+" @param ... The font specification, '*', '?' or nothing.
 " @returns Nothing.
 " ============================================================================
-fun s:FontCatalogSet(spec)
-    if a:spec == '*'
-        set guifont=*
-    elseif a:spec == '?'
+fun s:FontCatalogSet(...)
+    if a:0 == 0 || a:1 == '?'
         call s:msgEcho('none', 'Font: "'.&guifont.'"')
+    elseif a:1 == '*'
+        set guifont=*
     else
-        exec 'set guifont='.escape(a:spec, ' \')
-    endif
-
-    if a:spec != '?' && a:spec != '*' && s:checkConfig()
-        call s:writeCategory('.lastused', [a:spec])
+        exec 'set guifont='.escape(a:1, ' \')
+        call s:writeCategory('.lastused', [a:1])
     endif
 endfunc " >>>
 
@@ -477,15 +475,15 @@ command -nargs=* -complete=customlist,s:FontCatalogList FCRem :call s:FontCatalo
 command -nargs=1 -complete=customlist,s:FontCatalogList FCDel :call s:FontCatalogRemoveCategory(<f-args>)
 
 " List the categories of the current font.
-command -nargs=0 FCCat :echo s:FontCatalogListCategories()
+command -nargs=? -complete=customlist,s:FontCatalogFontsList FCCat :echo s:FontCatalogListCategories(<f-args>)
 
 " List all fonts within a category or categories.
 command -nargs=* -complete=customlist,s:FontCatalogList FCFonts :echo s:FontCatalogFonts(<f-args>)
 command -nargs=* -complete=customlist,s:FontCatalogList Fonts :echo s:FontCatalogFonts(<f-args>)
 
 " Sets a font to be used.
-command -nargs=1 -complete=customlist,s:FontCatalogFontsList FCSet :call s:FontCatalogSet(<f-args>)
-command -nargs=1 -complete=customlist,s:FontCatalogFontsList Font :call s:FontCatalogSet(<f-args>)
+command -nargs=? -complete=customlist,s:FontCatalogFontsList FCSet :call s:FontCatalogSet(<f-args>)
+command -nargs=? -complete=customlist,s:FontCatalogFontsList Font :call s:FontCatalogSet(<f-args>)
 
 " Opens the browse for font dialog.
 command -nargs=0 FCLoad :set guifont=*
@@ -493,20 +491,25 @@ command -nargs=0 FCLoad :set guifont=*
 " Lists the current categories
 command -nargs=? FCList :echo s:FontCatalogCategoriesInfo(<f-args>)
 
-"" If there is a default font, use it
+" Set a default font or use one from the previous session. We build an
+" 'autocmd' because this script is sourced before the GUI is started.
+let s:fc_DefaultFont = ''
 if exists('g:fc_DefaultFont')
-    call s:FontCatalogSet(g:fc_DefaultFont)
+    let s:fc_DefaultFont = g:fc_DefaultFont
 else
-    "" Select from a previous usage
     let fontList = s:fontList('.lastused')
     if !empty(fontList)
-        call s:FontCatalogSet(fontList[0])
+        let s:fc_DefaultFont = fontList[0]
     endif
     unlet fontList
 endif
+
+if strlen(s:fc_DefaultFont) > 0
+    autocmd GUIEnter * call s:FontCatalogSet(s:fc_DefaultFont)
+endif
 " vim:ff=unix:fdm=marker:fmr=<<<,>>>
 doc/fontcatalog.txt	[[[1
-260
+281
 *fontcatalog.txt*            Font Catalog Plugin                  May 13, 2014
 *fontcatalog.vim*                                                *fontcatalog*
 
@@ -514,7 +517,7 @@ Author: Alessandro Antonello <antonello.ale@gmail.com>
 
 License:    This plugin is under GPLv3 license.  This basically means that you
             are free  to copy,  share,  distribute,  sell or change  it as you
-            like.  There are no warranties tough.
+            like.  There are no warranties though.
 
 ==============================================================================
                                                            *fontcatalog-index*
@@ -661,7 +664,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 
 
                                                                       *:FCRem*
-:FCRem {category} [category] [...]
+:FCRem [category] [...]
         Removes the  current selected font  from one or  more categories.  You
         can use <Tab> for command line completion or <CTRL-D> to see a list of
         categories.  You can remove the font  from more than one category with
@@ -669,6 +672,8 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 >
         :FCRem light bold
 <
+        Also,  if no category name is typed, the function will be removed from
+        all categories where it is found.
 
 
                                                                       *:FCDel*
@@ -683,12 +688,14 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 
 
                                                                       *:FCCat*
-:FCCat
-        List all categories where the  current selected font can be found.  No
-        arguments for this command.  The result is a simple list of names.
+:FCCat [fontspec]
+        List  all  categories  where  a  font  can  be  found.  The [fontspec]
+        argument is optional.  If not passed the current selected font will be
+        used.  The result is a simple list of names.
 >
         :FCCat
-        light bold
+        -> Categories for "Courier New:h12"
+                light, bold
 <
 
 
@@ -715,7 +722,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         name and size.  Completion applies.  If you  pass '*' as the font name
         the font list dialog will be shown.  If  you pass '?' as the font name
         the current selected  font specification will be shown  in the command
-        line.
+        line. Also if the command is called alone.
 >
         :Font ?
         Font: "Letter Gothic Std Medium:h12"
@@ -756,6 +763,20 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 ==============================================================================
 7. ChangeLog                                             *fontcatalog-changes*
 
+May 14, 2014 (version: 1.0.2)
+    fontcatalog.vim
+        * |:FCFont|, |:Font|: Now those commands shows the selected font
+          specification when called without arguments.
+        * |:FCCat|: Now this command accepts an argument allowing to get the
+          categories of a font other than the selected one. It has the
+          completion feature of listing all fonts in the catalog.
+        * The selection of the startup font was moved to GUIEnter auto
+          command.
+    fontcatalog.txt
+        * Documentation of |:FCRem| command updated.
+        * Documentation of |:FCFont| and |:Font| commands updated.
+        * Documentation of |:FCCat| command updated.
+
 May 13, 2014:
         * fontcatalog.vim (version 1.0): First release.
         * fontcatalog.txt (version 1.0): First release.
@@ -763,7 +784,10 @@ May 13, 2014:
 ==============================================================================
 8. Todo                                                     *fontcatalog-todo*
 
-        Better font choosing method. Maybe using quickfix window.
+        1)  Better  font selection  method.  Maybe  using  quickfix  window or
+        something like that.
+        2)  Script functions  could be  passed to  'autoload' directory.  Will
+        speed up Vim loading time.
 
 ==============================================================================
 vim:tw=78:ts=4:sw=4:ft=help:

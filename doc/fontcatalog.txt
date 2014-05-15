@@ -152,7 +152,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 
 
                                                                       *:FCRem*
-:FCRem {category} [category] [...]
+:FCRem [category] [...]
         Removes the  current selected font  from one or  more categories.  You
         can use <Tab> for command line completion or <CTRL-D> to see a list of
         categories.  You can remove the font  from more than one category with
@@ -160,6 +160,8 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 >
         :FCRem light bold
 <
+        Also,  if no category name is typed, the function will be removed from
+        all categories where it is found.
 
 
                                                                       *:FCDel*
@@ -174,12 +176,14 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 
 
                                                                       *:FCCat*
-:FCCat
-        List all categories where the  current selected font can be found.  No
-        arguments for this command.  The result is a simple list of names.
+:FCCat [fontspec]
+        List  all  categories  where  a  font  can  be  found.  The [fontspec]
+        argument is optional.  If not passed the current selected font will be
+        used.  The result is a simple list of names.
 >
         :FCCat
-        light bold
+        -> Categories for "Courier New:h12"
+                light, bold
 <
 
 
@@ -206,7 +210,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         name and size.  Completion applies.  If you  pass '*' as the font name
         the font list dialog will be shown.  If  you pass '?' as the font name
         the current selected  font specification will be shown  in the command
-        line.
+        line. Also if the command is called alone.
 >
         :Font ?
         Font: "Letter Gothic Std Medium:h12"
@@ -247,6 +251,20 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 ==============================================================================
 7. ChangeLog                                             *fontcatalog-changes*
 
+May 14, 2014 (version: 1.0.2)
+    fontcatalog.vim
+        * |:FCFont|, |:Font|: Now those commands shows the selected font
+          specification when called without arguments.
+        * |:FCCat|: Now this command accepts an argument allowing to get the
+          categories of a font other than the selected one. It has the
+          completion feature of listing all fonts in the catalog.
+        * The selection of the startup font was moved to GUIEnter auto
+          command.
+    fontcatalog.txt
+        * Documentation of |:FCRem| command updated.
+        * Documentation of |:FCFont| and |:Font| commands updated.
+        * Documentation of |:FCCat| command updated.
+
 May 13, 2014:
         * fontcatalog.vim (version 1.0): First release.
         * fontcatalog.txt (version 1.0): First release.
@@ -254,7 +272,10 @@ May 13, 2014:
 ==============================================================================
 8. Todo                                                     *fontcatalog-todo*
 
-        Better font choosing method. Maybe using quickfix window.
+        1)  Better  font selection  method.  Maybe  using  quickfix  window or
+        something like that.
+        2)  Script functions  could be  passed to  'autoload' directory.  Will
+        speed up Vim loading time.
 
 ==============================================================================
 vim:tw=78:ts=4:sw=4:ft=help:

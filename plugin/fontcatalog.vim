@@ -175,23 +175,24 @@ fun s:FontCatalogRemoveCategory(name)
 
     call delete(l:fileList[0])
 endfun  " >>>
-" s:FontCatalogListCategories() <<<
+" s:FontCatalogListCategories(...) <<<
 " List the categories of the current font.
+" @param ... Font specification or nothing.
 " @returns A List object with the category names.
 " ============================================================================
-fun s:FontCatalogListCategories()
+fun s:FontCatalogListCategories(...)
     if !s:checkConfig()
         return ''
     endif
 
-    let l:fontSpec = &guifont
+    let l:fontSpec = a:0 ? a:1 : &guifont
     let l:foundCategories = s:fontListCategories(l:fontSpec)
 
     if empty(l:foundCategories)
         return '"'.l:fontSpec.'" not found in font catalog'
     else
         call sort(l:foundCategories)
-        return join(l:foundCategories, '  ')
+        return '-> Categories for "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
 " s:FontCatalogFonts(...) <<<
@@ -237,22 +238,19 @@ fun s:FontCatalogFonts(...)
 
     return join(l:fontList, "\n")
 endfun  " >>>
-" s:FontCatalogSet(spec) <<<
+" s:FontCatalogSet(...) <<<
 " Sets a font to be used.
-" @param spec The font specification.
+" @param ... The font specification, '*', '?' or nothing.
 " @returns Nothing.
 " ============================================================================
-fun s:FontCatalogSet(spec)
-    if a:spec == '*'
-        set guifont=*
-    elseif a:spec == '?'
+fun s:FontCatalogSet(...)
+    if a:0 == 0 || a:1 == '?'
         call s:msgEcho('none', 'Font: "'.&guifont.'"')
+    elseif a:1 == '*'
+        set guifont=*
     else
-        exec 'set guifont='.escape(a:spec, ' \')
-    endif
-
-    if a:spec != '?' && a:spec != '*' && s:checkConfig()
-        call s:writeCategory('.lastused', [a:spec])
+        exec 'set guifont='.escape(a:1, ' \')
+        call s:writeCategory('.lastused', [a:1])
     endif
 endfunc " >>>
 
@@ -472,15 +470,15 @@ command -nargs=* -complete=customlist,s:FontCatalogList FCRem :call s:FontCatalo
 command -nargs=1 -complete=customlist,s:FontCatalogList FCDel :call s:FontCatalogRemoveCategory(<f-args>)
 
 " List the categories of the current font.
-command -nargs=0 FCCat :echo s:FontCatalogListCategories()
+command -nargs=? -complete=customlist,s:FontCatalogFontsList FCCat :echo s:FontCatalogListCategories(<f-args>)
 
 " List all fonts within a category or categories.
 command -nargs=* -complete=customlist,s:FontCatalogList FCFonts :echo s:FontCatalogFonts(<f-args>)
 command -nargs=* -complete=customlist,s:FontCatalogList Fonts :echo s:FontCatalogFonts(<f-args>)
 
 " Sets a font to be used.
-command -nargs=1 -complete=customlist,s:FontCatalogFontsList FCSet :call s:FontCatalogSet(<f-args>)
-command -nargs=1 -complete=customlist,s:FontCatalogFontsList Font :call s:FontCatalogSet(<f-args>)
+command -nargs=? -complete=customlist,s:FontCatalogFontsList FCSet :call s:FontCatalogSet(<f-args>)
+command -nargs=? -complete=customlist,s:FontCatalogFontsList Font :call s:FontCatalogSet(<f-args>)
 
 " Opens the browse for font dialog.
 command -nargs=0 FCLoad :set guifont=*
@@ -488,15 +486,20 @@ command -nargs=0 FCLoad :set guifont=*
 " Lists the current categories
 command -nargs=? FCList :echo s:FontCatalogCategoriesInfo(<f-args>)
 
-"" If there is a default font, use it
+" Set a default font or use one from the previous session. We build an
+" 'autocmd' because this script is sourced before the GUI is started.
+let s:fc_DefaultFont = ''
 if exists('g:fc_DefaultFont')
-    call s:FontCatalogSet(g:fc_DefaultFont)
+    let s:fc_DefaultFont = g:fc_DefaultFont
 else
-    "" Select from a previous usage
     let fontList = s:fontList('.lastused')
     if !empty(fontList)
-        call s:FontCatalogSet(fontList[0])
+        let s:fc_DefaultFont = fontList[0]
     endif
     unlet fontList
+endif
+
+if strlen(s:fc_DefaultFont) > 0
+    autocmd GUIEnter * call s:FontCatalogSet(s:fc_DefaultFont)
 endif
 " vim:ff=unix:fdm=marker:fmr=<<<,>>>
