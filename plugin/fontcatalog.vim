@@ -208,16 +208,21 @@ fun s:FontCatalogListCategories(...)
         return '"'.l:fontSpec.'" not found in font catalog'
     else
         call sort(l:foundCategories)
-        return '-> Categories for "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
+        return '-> Font: "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
 " s:FontCatalogFonts(...) <<<
 " List all fonts within a category or categories.
 " @param ... List of category names. If empty, all fonts in the catalog are
-" listed.
+" listed. If '*' the font dialog will be shown.
 " @return A list of all fonts in the catalog.
 " ============================================================================
 fun s:FontCatalogFonts(...)
+    if a:1 == '*'
+        set guifont=*
+        return ''
+    endif
+
     if !s:checkConfig()
         return ''
     endif
@@ -256,14 +261,13 @@ fun s:FontCatalogFonts(...)
 endfun  " >>>
 " s:FontCatalogSet(...) <<<
 " Sets a font to be used.
-" @param ... The font specification, '*', '?' or nothing.
+" @param ... The font name or nothing.
 " @returns Nothing.
 " ============================================================================
 fun s:FontCatalogSet(...)
-    if a:0 == 0 || a:1 == '?'
-        call s:msgEcho('none', 'Font: "'.&guifont.'"')
-    elseif a:1 == '*'
-        set guifont=*
+    if a:0 == 0
+"        call s:msgEcho('none', 'Font: "'.&guifont.'"')
+        echo call(function('s:FontCatalogListCategories'), a:000)
     else
         exec 'set guifont='.escape(a:1, ' \')
         call s:writeCategory('.lastused', [a:1])
@@ -492,25 +496,19 @@ command -nargs=+ -complete=customlist,s:FontCatalogList FontAdd :call s:FontCata
 command -nargs=* -complete=customlist,s:FontCatalogList FontRm :call s:FontCatalogRem(<f-args>)
 
 " Remove an specified font from one or more categoris in the catalog.
-command -nargs=1 -complete=customlist,s:FontCatalogFontsList FontRemove :call s:FontRemoveFromCatalog(<q-args>)
+command -nargs=1 -complete=customlist,s:FontCatalogFontsList FontRmFont :call s:FontRemoveFromCatalog(<q-args>)
 
 " Remove a category from the catalog.
-command -nargs=1 -complete=customlist,s:FontCatalogList FontDelCat :call s:FontCatalogRemoveCategory(<f-args>)
+command -nargs=1 -complete=customlist,s:FontCatalogList FontRmCat :call s:FontCatalogRemoveCategory(<f-args>)
 
-" List the categories of the current font.
-command -nargs=? -complete=customlist,s:FontCatalogFontsList FontCatalog :echo s:FontCatalogListCategories(<f-args>)
+" Lists the current categories
+command -nargs=? FontCategories :echo s:FontCatalogCategoriesInfo(<f-args>)
 
 " List all fonts within a category or categories.
 command -nargs=* -complete=customlist,s:FontCatalogList Fonts :echo s:FontCatalogFonts(<f-args>)
 
 " Sets a font to be used.
 command -nargs=? -complete=customlist,s:FontCatalogFontsList Font :call s:FontCatalogSet(<f-args>)
-
-" Opens the browse for font dialog.
-command -nargs=0 FontDialog :set guifont=*
-
-" Lists the current categories
-command -nargs=? FontList :echo s:FontCatalogCategoriesInfo(<f-args>)
 
 " Set a default font or use one from the previous session. We build an
 " 'autocmd' because this script is sourced before the GUI is started.
