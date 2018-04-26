@@ -157,6 +157,22 @@ fun s:FontCatalogRem(...)
         call s:removeFromCategories(l:fontSpec, '.allfonts')
     endif
 endfun  " >>>
+" s:FontRemoveFromCatalog(name) <<<
+" Remove a font from the catalog.
+" @param name The font name. Completion is supported.
+" ----------------------------------------------------------------------------
+fun s:FontRemoveFromCatalog(name)
+    if !s:checkConfig()
+        return
+    endif
+
+    call s:removeFromCategories(a:name)
+
+    if a:0 == 0
+        " Also remove from the '.allfonts' pseudo-category.
+        call s:removeFromCategories(a:name, '.allfonts')
+    endif
+endfun " >>>
 " s:FontCatalogRemoveCategory(name) <<<
 " Remove a category from the catalog.
 " @param name Category to delete.
@@ -253,6 +269,15 @@ fun s:FontCatalogSet(...)
         call s:writeCategory('.lastused', [a:1])
     endif
 endfunc " >>>
+" s:FontCatalogSetDefault(name) <<<
+" @param name Name of the default font.
+" @returns Nothing
+fun s:FontCatalogSetDefault(name)
+    if exists("g:fc_DontUseDefault") && g:fc_DontUseDefault == 1
+        return
+    endif
+    call s:FontCatalogSet(a:name)
+endfun  " >>>
 
 "" Local Functions
 " s:msgEcho(type, msg) <<<
@@ -294,7 +319,7 @@ fun s:checkConfig()
     endif
 
     if !isdirectory(s:font_catalog)
-        call mkdir(s:font_catalog)
+        call mkdir(s:font_catalog, 'p')
     endif
 
     if !isdirectory(s:font_catalog)
@@ -461,30 +486,31 @@ endfun  " >>>
 
 "" Commands
 " Add the current font to one or more categories
-command -nargs=+ -complete=customlist,s:FontCatalogList FCAdd :call s:FontCatalogAdd(<f-args>)
+command -nargs=+ -complete=customlist,s:FontCatalogList FontAdd :call s:FontCatalogAdd(<f-args>)
 
 " Remove the current font from one or more categories in the catalog.
-command -nargs=* -complete=customlist,s:FontCatalogList FCRem :call s:FontCatalogRem(<f-args>)
+command -nargs=* -complete=customlist,s:FontCatalogList FontRm :call s:FontCatalogRem(<f-args>)
+
+" Remove an specified font from one or more categoris in the catalog.
+command -nargs=1 -complete=customlist,s:FontCatalogFontsList FontRemove :call s:FontRemoveFromCatalog(<q-args>)
 
 " Remove a category from the catalog.
-command -nargs=1 -complete=customlist,s:FontCatalogList FCDel :call s:FontCatalogRemoveCategory(<f-args>)
+command -nargs=1 -complete=customlist,s:FontCatalogList FontDelCat :call s:FontCatalogRemoveCategory(<f-args>)
 
 " List the categories of the current font.
-command -nargs=? -complete=customlist,s:FontCatalogFontsList FCCat :echo s:FontCatalogListCategories(<f-args>)
+command -nargs=? -complete=customlist,s:FontCatalogFontsList FontCatalog :echo s:FontCatalogListCategories(<f-args>)
 
 " List all fonts within a category or categories.
-command -nargs=* -complete=customlist,s:FontCatalogList FCFonts :echo s:FontCatalogFonts(<f-args>)
 command -nargs=* -complete=customlist,s:FontCatalogList Fonts :echo s:FontCatalogFonts(<f-args>)
 
 " Sets a font to be used.
-command -nargs=? -complete=customlist,s:FontCatalogFontsList FCSet :call s:FontCatalogSet(<f-args>)
 command -nargs=? -complete=customlist,s:FontCatalogFontsList Font :call s:FontCatalogSet(<f-args>)
 
 " Opens the browse for font dialog.
-command -nargs=0 FCLoad :set guifont=*
+command -nargs=0 FontDialog :set guifont=*
 
 " Lists the current categories
-command -nargs=? FCList :echo s:FontCatalogCategoriesInfo(<f-args>)
+command -nargs=? FontList :echo s:FontCatalogCategoriesInfo(<f-args>)
 
 " Set a default font or use one from the previous session. We build an
 " 'autocmd' because this script is sourced before the GUI is started.
@@ -500,6 +526,6 @@ else
 endif
 
 if strlen(s:fc_DefaultFont) > 0
-    autocmd GUIEnter * call s:FontCatalogSet(s:fc_DefaultFont)
+    autocmd GUIEnter * call s:FontCatalogSetDefault(s:fc_DefaultFont)
 endif
 " vim:ff=unix:fdm=marker:fmr=<<<,>>>

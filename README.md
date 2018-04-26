@@ -11,10 +11,10 @@ time, between Vim sessions or Vim instances. Some match font selection with
 color scheme. Some are good to use with light background. Others only on dark
 background. Some fonts looks great in Linux or Mac but sucks on Windows.
 Others look the other way around. Some fonts have *bold* and/or *italic*
-variants. Others do not. Thats is why I wrote this little plugin. To organize
+variants. Others do not. That is why I wrote this little plugin. To organize
 this bunch of differences and possibilities in a simple way.
 
-**Font Catalog** builds a catalog of fonts you choose to use in Vim sessions.
+**Font Catalog** builds a catalog of fonts you choose to use in GVim.
 You set a font in GUI Vim then add it to the catalog, setting some categories
 (or properties) for that font. You do this with all your fonts, or only the
 fonts you use most. The you can query the plugin which font has a specific
@@ -38,6 +38,11 @@ directories. Also the help file will be ready to use.
 
     :help fontcatalog
 
+Also you can use [pathogen](https://github.com/tpope/pathogen.vim).
+
+    cd ~/.vim/bundle
+    git clone https://github.com/aantonello/vim-fontcatalog
+
 ## License
 
 This plugin is under GPLv3 license. This basically means that you are free to
@@ -46,5 +51,6 @@ you find some bugs, please mail me.
 
 ## ChangeLog
 
+**Abril 26, 2018**: Version 1.1 - Added FontRemove command. Changed all commands to start with 'Font' instead of 'FC'.
 **May 14, 2014**: Version 1.0 - First release.
 
