@@ -218,7 +218,7 @@ endfun  " >>>
 " @return A list of all fonts in the catalog.
 " ============================================================================
 fun s:FontCatalogFonts(...)
-    if a:1 == '*'
+    if a:0 > 0 && a:1 == '*'
         set guifont=*
         return ''
     endif
