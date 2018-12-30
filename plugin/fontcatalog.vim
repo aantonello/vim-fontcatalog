@@ -29,7 +29,7 @@ command -nargs=1 -complete=customlist,fontcatalog#listCategories FontRmCat :call
 command -nargs=? -complete=customlist,fontcatalog#listCategories FontCategories :echo fontcatalog#categoryInfo(<f-args>)
 
 " List all fonts within a category or categories.
-command -nargs=* -complete=customlist,fontcatalog#listCategories Fonts :echo fontcatalog#listFonts(<f-args>)
+command -nargs=* -complete=customlist,fontcatalog#listCategories Fonts :echo fontcatalog#fontsIn(<f-args>)
 
 " Sets a font to be used.
 command -nargs=? -complete=customlist,fontcatalog#listFonts Font :call fontcatalog#removeCategory(<f-args>)

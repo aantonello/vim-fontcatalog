@@ -236,13 +236,13 @@ fun fontcatalog#setDefault()
         call fontcatalog#useFont(defaultFont)
     endif
 endfun  " >>>
-" fontcatalog#listFonts(...) <<<
+" fontcatalog#fontsIn(...) <<<
 " List all fonts within a category or categories.
 " @param ... List of category names. If empty, all fonts in the catalog are
 " listed. If '*' the font dialog will be shown.
 " @return A list of all fonts in the catalog.
 " ============================================================================
-fun fontcatalog#listFonts(...)
+fun fontcatalog#fontsIn(...)
     if a:0 > 0 && a:1 == '*'
         set guifont=*
         return ''
