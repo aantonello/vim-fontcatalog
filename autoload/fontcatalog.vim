@@ -211,7 +211,7 @@ fun fontcatalog#useFont(...)
 
     if a:0 == 0
         let l:paramList = copy(a:000)
-        call insert(l:paramList, catalogPath)
+        let l:paramList = insert(l:paramList, catalogPath)
         echo call(function('s:listCategories'), l:paramList)
     else
         exec 'set guifont='.escape(a:1, ' \')
@@ -228,7 +228,10 @@ fun fontcatalog#setDefault()
     else
         let catalogPath = s:checkConfig()
         if strlen(catalogPath) > 0
-            let defaultFont = s:fontList(catalogPath, '.lastused')
+            let l:fontList = s:fontList(catalogPath, '.lastused')
+            if len(l:fontList) > 0
+                let defaultFont = l:fontList[0]
+            endif
         endif
     endif
 
@@ -254,7 +257,7 @@ fun fontcatalog#fontsIn(...)
     endif
 
     let l:callParams = copy(a:000)
-    call insert(l:callParams, catalogPath)
+    let l:callParams = insert(l:callParams, catalogPath)
     let l:fontList = call(function('s:fontList'), l:callParams)
 
     if empty(l:fontList)
@@ -524,3 +527,4 @@ fun s:listCategories(catalogPath, ...)
     endif
 endfun  " >>>
 
+" vim:ff=unix:fdm=marker:fmr=<<<,>>>
