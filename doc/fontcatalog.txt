@@ -54,11 +54,11 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         :FontAdd regular bold italic heavy-on-dark
 <
         Well,  that was  four categories actualy:  'regular' because  it has a
-        regular normal shape.  'bold' because it has a bold version. MacVim is
-        unable to fake bold and italic  styles so is useful to have categories
-        that tell if a font has a style or not.  'italic' was also created for
-        that matter.  Finally 'heavy-on-dark' because it  is a little heavy in
-        dark backgrounds.
+        regular size.  'bold' because it has a bold version.  MacVim is unable
+        to fake  bold and italic styles like Windows,  so it's useful  to have
+        categories that tell if a font  has a style or not.  'italic' was also
+        created for  that  matter.  Finally  'heavy-on-dark'  because  it is a
+        little heavy in dark backgrounds.
 
         The font 'Letter  Gothic Std Medium' has a  thin shape.  Good for dark
         backgrounds.  It also has  'bold' and 'italic' variants.  So  I put it
@@ -67,7 +67,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         :FontAdd regular bold italic ok-on-dark
 <
         Meaning this font is Ok on dark backgrounds. After I add several fonts
-        to my categories I can list and set then in a more easily fashion:
+        to my catalog I can list and set then in a more easily fashion:
 >
         :Fonts ok-on-dark
 <
@@ -76,9 +76,10 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 >
         :Font let<Tab>
 <
-        The name will be completed for me. I can change the size if I want to.
-        Pressing <Enter> the  chosen  font  will  be  used  by  GVim using the
-        command 'set guifont=<Font>'.
+        The name will  be completed for me.  I  can change the size  if I want
+        to.  Pressing <Enter>  the chosen font  will be used  by GVim throught
+        the command 'set guifont=<Font>'.  Spaces in the font name are scaped,
+        if needed.
 
 ==============================================================================
 3. Installing                                            *fontcatalog-install*
@@ -97,8 +98,9 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 <
         And that is it.
 
-        If you  prefer,  Pathogen can be  used.  Clone the repository  at your
-        bundle  directory  and the  pathogen  plugin  will  do  the rest.  See
+        Any plugin manager can be used.  If you like Pathogen,  as myself, you
+        can use  it.  Clone the  repository at your  bundle directory  and the
+        pathogen      plugin       will      do       the      rest.       See
         'https://github.com/tpope/pathogen.vim' for more information:
 >
         cd ~/.vim/bundle
@@ -167,16 +169,11 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         :FontRm light bold
 <
                                                                  *:FontRmFont*
-:FontRmFont {Font} [category]
-        Removes  the  specified  Font  from  one  or  more  categories.   This
-        complements the  command |:FontRm| in the  way that you  don't need to
-        select the  Font to  remove it.  You  can use  <Tab> for  command line
-        completion or  <CTRL-D> to  see a  list of  available categories.  The
-        {Font} argument  is the  Font specification  to be  removed and  it is
-        mandatory. The [category], can be one or more category names. Or none.
-        If none then the Font will be removed from all categories.
+:FontRmFont {Font}
+        Removes the  specified Font from  the catalog.  You can  use <Tab> for
+        command line completion or <CTRL-D> to see a list of fonts.
 >
-        :FontRmFont Consolas:h12 heavy-on-black
+        :FontRmFont Consolas:h12
 <
 
                                                                    *:FontRmCat*
@@ -190,10 +187,11 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 <
 
                                                              *:FontCategories*
-:FontCategories
-        Shows a simple list with all categories found in the catalog and the
-number of Fonts on each category. This command has no completion and no
-arguments.
+:FontCategories [categories]
+        Shows a simple  list with all categories found in  the catalog and the
+        number of Fonts on each category.  You  can use <Tab> for command line
+        completion or <CTRL-D> for a  list of categories.  When no argument is
+        passed, all categories are listed.
 >
         :FontCategories
         bold        > With 2 fonts
@@ -222,10 +220,11 @@ arguments.
 :Font [Font]
         Select a font to  be  used  in  GUI  Vim.  Its  result  is the same as
         setting the option |'guifont'|.  Its argument is a Font specification,
-as added to the catalog. Completion applies. Without arguments the command will
-show, in the command bar, the current Font selected and its categories.
+        as added  to the catalog.  Completion  applies.  Without arguments the
+        command will show,  in the command bar,  the current Font selected and
+        its categories.
 >
-        :Font Consolas:h12      " Is the same as
+        :Font Consolas:h12      " Is the same as...
         :set guifont=Consolas:h12
 
         :Font
@@ -236,13 +235,23 @@ show, in the command bar, the current Font selected and its categories.
 ==============================================================================
 6. Mappings                                             *fontcatalog-mappings*
 
-        There is no mappings defined in the plugin. You can create your own if
-        you want to.  You can put your  mappings in the 'gvimrc' file since it
-        is loaded after  the  plugin  is  load  and  the  commands are already
+        There is no  mappings defined in the plugin.  You  can create your own
+        if you want to.  You can put  your mappings in the 'gvimrc' file since
+        it is loaded  after  the  plugin  loads  and  the commands are already
         available.
 
 ==============================================================================
 7. ChangeLog                                             *fontcatalog-changes*
+
+December 30, 2018 (version: 1.2)
+    autload/fontcatalog.vim
+        * All functions are now in the autoload path. If the plugin is not
+          used the functions should not be loaded.
+    plugin/fontcatalog.vim
+        * Now uses funcions in the autoload path. No function is defined in
+          this file.
+    doc/fontcatalog.doc
+        * Documentation is up to date.
 
 April 26, 2018 (version: 1.1)
     fontcatalog.vim
