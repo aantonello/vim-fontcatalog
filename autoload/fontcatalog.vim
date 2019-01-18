@@ -210,8 +210,7 @@ fun fontcatalog#useFont(...)
     endif
 
     if a:0 == 0
-        let l:paramList = copy(a:000)
-        let l:paramList = insert(l:paramList, catalogPath)
+        let l:paramList = [catalogPath]
         echo call(function('s:listCategories'), l:paramList)
     else
         exec 'set guifont='.escape(a:1, ' \')
@@ -222,6 +221,10 @@ endfunc " >>>
 " @param name Name of the default font.
 " @returns Nothing
 fun fontcatalog#setDefault()
+    if exists('g:fc_DontUseDefault') && g:fc_DontUseDefault == 1
+        return
+    endif
+
     let defaultFont = ''
     if exists('g:fc_DefaultFont') && strlen(g:fc_DefaultFont) > 0
         let defaultFont = g:fc_DefaultFont
@@ -256,8 +259,14 @@ fun fontcatalog#fontsIn(...)
         return ''
     endif
 
-    let l:callParams = copy(a:000)
-    let l:callParams = insert(l:callParams, catalogPath)
+    if a:0 > 0
+        let l:callParams = copy(a:000)
+        let l:callParams = insert(l:callParams, catalogPath)
+    else
+        let l:callParams = [catalogPath]
+    endif
+
+    call s:msgEcho('warning', l:callParams)
     let l:fontList = call(function('s:fontList'), l:callParams)
 
     if empty(l:fontList)
@@ -328,13 +337,17 @@ fun s:checkConfig()
     let result = ''
 
     if exists('g:fc_CatalogFolder')
-        let result = g:fc_CatalogFolder
+        if strlen(g:fc_CatalogFolder) > 0
+            let result = expand(g:fc_CatalogFolder)
+        else
+            return ''
+        endif
     endif
 
     if strlen(result) == 0
         call s:msgEcho('error', 'No storage folder was set')
         echohl None
-        return 0
+        return ''
     endif
 
     if !isdirectory(result)
@@ -343,10 +356,10 @@ fun s:checkConfig()
 
     if !isdirectory(result)
         call s:msgEcho('error', 'Could not found font catalog on "'.result.'" path')
-        return 0
+        return ''
     endif
 
-    return 1
+    return result
 endfun  " >>>
 " s:catalogList(catalogPath) <<<
 " List all files in the catalog's directory.

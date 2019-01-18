@@ -32,7 +32,7 @@ command -nargs=? -complete=customlist,fontcatalog#listCategories FontCategories 
 command -nargs=* -complete=customlist,fontcatalog#listCategories Fonts :echo fontcatalog#fontsIn(<f-args>)
 
 " Sets a font to be used.
-command -nargs=? -complete=customlist,fontcatalog#listFonts Font :call fontcatalog#removeCategory(<f-args>)
+command -nargs=? -complete=customlist,fontcatalog#listFonts Font :call fontcatalog#useFont(<f-args>)
 
 " Set a default font or use one from the previous session. We build an
 " 'autocmd' because this script is sourced before the GUI enters.
