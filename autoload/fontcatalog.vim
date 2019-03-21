@@ -122,7 +122,7 @@ fun fontcatalog#addFont(...)
     call call(function('s:addToCategories'), l:argumentList)
 
     " Also add to the '.allfonts' pseudo category
-    call s:addToCategories(l:fontSpec, '.allfonts')
+    call s:addToCategories(catalogPath, l:fontSpec, '.allfonts')
 endfun  " >>>
 " fontcatalog#removeCurrent(...) <<<
 " Remove the current font from one or more categories in the catalog.
@@ -266,7 +266,7 @@ fun fontcatalog#fontsIn(...)
         let l:callParams = [catalogPath]
     endif
 
-    call s:msgEcho('warning', l:callParams)
+    call s:msgEcho('warn', l:callParams)
     let l:fontList = call(function('s:fontList'), l:callParams)
 
     if empty(l:fontList)
