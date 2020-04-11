@@ -213,14 +213,16 @@ fun fontcatalog#useFont(...)
     let l:paramList = [catalogPath]
     echo call(function('s:listCategories'), l:paramList)
   else
-    let l:categories = s:fontListCategories(catalogPath, &guifont)
-    if index(l:categories, 'needspace') >= 0
-      set linespace=1
+    let l:categories = s:fontListCategories(catalogPath, a:1)
+    let l:linespace = ''
+
+    if index(l:categories, 'needspace') < 0
+      let l:linespace = 'linespace=0'
     else
-      set linespace=0
+      let l:linespace = 'linespace=1'
     endif
 
-    exec 'set guifont='.escape(a:1, ' \')
+    exec 'set guifont='.escape(a:1, ' \') l:linespace
     call s:writeCategory(catalogPath, '.lastused', [a:1])
   endif
 endfunc " >>>
