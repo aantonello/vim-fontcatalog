@@ -242,7 +242,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         available.
 
 ==============================================================================
-7. Functions                                            *fontcatalog-funcions*
+7. Functions                                            *fontcatalog-functions*
 
         The plugin  has all functionality defined  in autoload functions.  You
         can see the file  'autoload/fontcatalog.vim' for help.  Most notorious
