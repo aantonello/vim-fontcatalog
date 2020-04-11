@@ -204,18 +204,25 @@ endfun  " >>>
 " @returns Nothing.
 " ============================================================================
 fun fontcatalog#useFont(...)
-    let catalogPath = s:checkConfig()
-    if strlen(catalogPath) == 0
-        return
+  let catalogPath = s:checkConfig()
+  if strlen(catalogPath) == 0
+    return
+  endif
+
+  if a:0 == 0
+    let l:paramList = [catalogPath]
+    echo call(function('s:listCategories'), l:paramList)
+  else
+    let l:categories = s:fontListCategories(catalogPath, &guifont)
+    if index(l:categories, 'needspace') >= 0
+      set linespace=1
+    else
+      set linespace=0
     endif
 
-    if a:0 == 0
-        let l:paramList = [catalogPath]
-        echo call(function('s:listCategories'), l:paramList)
-    else
-        exec 'set guifont='.escape(a:1, ' \')
-        call s:writeCategory(catalogPath, '.lastused', [a:1])
-    endif
+    exec 'set guifont='.escape(a:1, ' \')
+    call s:writeCategory(catalogPath, '.lastused', [a:1])
+  endif
 endfunc " >>>
 " fontcatalog#setDefault() <<<
 " @param name Name of the default font.
