@@ -24,8 +24,9 @@ License:    This plugin is under GPLv3 license.  This basically means that you
             :Fonts                                   : |:Fonts|
             :Font                                    : |:Font|
         6. Mappings..................................: |fontcatalog-mappings|
-        7. ChangeLog.................................: |fontcatalog-changes|
-        8. Todo......................................: |fontcatalog-todo|
+        7. Functions.................................: |fontcatalog-functions|
+        8. ChangeLog.................................: |fontcatalog-changes|
+        9. Todo......................................: |fontcatalog-todo|
 
 ==============================================================================
 2. What is this plugin for?                               *fontcatalog-whatis*
@@ -241,7 +242,21 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         available.
 
 ==============================================================================
-7. ChangeLog                                             *fontcatalog-changes*
+7. Functions                                            *fontcatalog-funcions*
+
+        The plugin  has all functionality defined  in autoload functions.  You
+        can see the file  'autoload/fontcatalog.vim' for help.  Most notorious
+        is the |fontcatalog#fontCategories()| function.
+
+                                                *fontcatalog#fontCategories()*
+fontcatalog#fontCategories({font})
+        The result is  a |List| with all categories  a font has.  The optional
+        argument  {font}  is  the  font  specification  as  configured  in the
+        catalog.  Note that the specification must be set as a string and must
+        have the size defined. If not passed the current front will be used.
+
+==============================================================================
+8. ChangeLog                                             *fontcatalog-changes*
 
 December 30, 2018 (version: 1.2)
     autload/fontcatalog.vim
@@ -281,7 +296,7 @@ May 13, 2014:
         * fontcatalog.txt (version 1.0): First release.
 
 ==============================================================================
-8. Todo                                                     *fontcatalog-todo*
+9. Todo                                                     *fontcatalog-todo*
 
         1)  Better  font selection  method.  Maybe  using  quickfix  window or
         something like that.

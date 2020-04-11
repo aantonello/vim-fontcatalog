@@ -306,6 +306,23 @@ fun fontcatalog#fontsIn(...)
 
     return join(l:fontList, "\n")
 endfun  " >>>
+" fontcatalog#fontCategories(...)<<<
+" The result is a List with the categories a font has.
+" Param: a:font Optional. Font specification as defined in the catalog (e.g.:
+" 'Consolas:h11'). If omitted the current selected font will be used. When no
+" categories found the result is an empty list ([]).
+" Return: List
+" ============================================================================
+fun fontcatalog#fontCategories(...)
+  let catalogPath = s:checkConfig()
+  if strlen(catalogPath) == 0
+    return []
+  endif
+
+  let l:font = a:0 ? a:1 : &guifont
+  return s:fontListCategories(catalogPath, l:font)
+endfun
+" >>>
 
 "" Local Functions 
 " s:msgEcho(type, msg) <<<
