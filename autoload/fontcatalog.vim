@@ -222,7 +222,28 @@ fun fontcatalog#useFont(...)
       let l:linespace = 'linespace=1'
     endif
 
+    " Airline integration
+    if index(l:categories, 'powerline') < 0
+      let g:airline_powerline_fonts = 0
+    else
+      let g:airline_powerline_fonts = 1
+    endif
+
+    " WebDevIcons integration
+    if index(l:categories, 'devicons') < 0
+      let g:webdevicons_enable_nerdtree = 0
+      let g:webdevicons_enable_airline_statusline = 0
+    else
+      let g:webdevicons_enable_nerdtree = 0
+      let g:webdevicons_enable_airline_statusline = 1
+    endif
+
     exec 'set guifont='.escape(a:1, ' \') l:linespace
+
+    " Resets webdevicons so NERDTree and Airline get updated
+    if exists('*webdevicons#softRefresh')
+      call webdevicons#softRefresh()
+    endif
     call s:writeCategory(catalogPath, '.lastused', [a:1])
   endif
 endfunc " >>>
