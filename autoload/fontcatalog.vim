@@ -629,9 +629,9 @@ fun s:resetAirline(allow)
           \ 'linenr': 'Δ ',
           \ 'maxlinenr': ' :',
           \ 'branch': 'Ψ',
-          \ 'notexists': 'Θ',
-          \ 'crypt': '◊',
-          \ 'dirty': 'ϟ',
+          \ 'notexists': ' Θ',
+          \ 'crypt': ' ◊',
+          \ 'dirty': ' ϟ',
           \}
     call extend(g:airline_symbols, l:powerline_symbols, 'force')
   endif
