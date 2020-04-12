@@ -240,13 +240,13 @@ fun fontcatalog#useFont(...)
 
     exec 'set guifont='.escape(a:1, ' \') l:linespace
 
-    " Resets webdevicons so NERDTree and Airline get updated
-    if exists('*webdevicons#softRefresh')
-      call webdevicons#softRefresh()
-    endif
-
     " Reset Airline
     call s:resetAirline()
+
+    " Resets webdevicons so NERDTree and Airline get updated
+    if exists('*webdevicons#refresh')
+      call webdevicons#refresh()
+    endif
 
     " Record the last used font configuration
     call s:writeCategory(catalogPath, '.lastused', [a:1])
@@ -601,6 +601,11 @@ fun s:resetAirline()
     let g:airline_right_sep = "\ue0b2"
     let g:airline_right_alt_sep = "\ue0b3"
 
+    let g:airline#extensions#tabline#left_sep = "\ue0b0"
+    let g:airline#extensions#tabline#left_alt_sep = "\ue0b1"
+    let g:airline#extensions#tabline#right_sep = "\ue0b2"
+    let g:airline#extensions#tabline#right_alt_sep = "\ue0b3"
+
     let l:powerline_symbols = {
           \ 'readonly': "\ue0a2",
           \ 'whitespace': "\u2632",
@@ -614,9 +619,14 @@ fun s:resetAirline()
     call extend(g:airline_symbols, l:powerline_symbols, 'force')
   else
     let g:airline_left_sep = ""
-    let g:airline_left_alt_sep = ""
+    let g:airline_left_alt_sep = '|'
     let g:airline_right_sep = ""
-    let g:airline_right_alt_sep = ""
+    let g:airline_right_alt_sep = '|'
+
+    let g:airline#extensions#tabline#left_sep = ''
+    let g:airline#extensions#tabline#left_alt_sep = ''
+    let g:airline#extensions#tabline#right_sep = ''
+    let g:airline#extensions#tabline#right_alt_sep = '|'
 
     let l:powerline_symbols = {
           \ 'readonly': 'RO',
