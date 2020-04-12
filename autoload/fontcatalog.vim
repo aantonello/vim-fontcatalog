@@ -244,6 +244,11 @@ fun fontcatalog#useFont(...)
     if exists('*webdevicons#softRefresh')
       call webdevicons#softRefresh()
     endif
+
+    " Reset Airline
+    call s:resetAirline()
+
+    " Record the last used font configuration
     call s:writeCategory(catalogPath, '.lastused', [a:1])
   endif
 endfunc " >>>
@@ -586,5 +591,50 @@ fun s:listCategories(catalogPath, ...)
         return '-> Font: "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
+" s:resetAirline() <<<
+" Resets Airline configuration.
+" ----------------------------------------------------------------------------
+fun s:resetAirline()
+  if g:airline_powerline_fonts
+    let g:airline_left_sep = "\ue0b0"
+    let g:airline_left_alt_sep = "\ue0b1"
+    let g:airline_right_sep = "\ue0b2"
+    let g:airline_right_alt_sep = "\ue0b3"
+
+    let l:powerline_symbols = {
+          \ 'readonly': "\ue0a2",
+          \ 'whitespace': "\u2632",
+          \ 'linenr': "\u2630 ",
+          \ 'maxlinenr': " \ue0a1",
+          \ 'branch': "\ue0a0",
+          \ 'notexists': "\u0246",
+          \ 'dirty': "\u26a1",
+          \ 'crypt': nr2char(0x1F512),
+          \}
+    call extend(g:airline_symbols, l:powerline_symbols, 'force')
+  else
+    let g:airline_left_sep = ""
+    let g:airline_left_alt_sep = ""
+    let g:airline_right_sep = ""
+    let g:airline_right_alt_sep = ""
+
+    let l:powerline_symbols = {
+          \ 'readonly': 'RO',
+          \ 'whitespace': '!',
+          \ 'linenr': 'ln ',
+          \ 'maxlinenr': ' :',
+          \ 'branch': '',
+          \ 'notexists': '?',
+          \ 'crypt': 'cr',
+          \ 'dirty': '!',
+          \}
+    call extend(g:airline_symbols, l:powerline_symbols, 'force')
+  endif
+
+  if exists(':AirlineRefresh')
+    AirlineRefresh
+  endif
+endfun
+" >>>
 
 " vim:ff=unix:fdm=marker:fmr=<<<,>>>
