@@ -222,26 +222,17 @@ fun fontcatalog#useFont(...)
       let l:linespace = 'linespace=1'
     endif
 
+    exec 'set guifont='.escape(a:1, ' \') l:linespace
+
     " Airline integration
-    if index(l:categories, 'powerline') < 0
-      let g:airline_powerline_fonts = 0
-    else
-      let g:airline_powerline_fonts = 1
-    endif
+    call s:resetAirline(index(l:categories, 'powerline') >= 0)
 
     " WebDevIcons integration
     if index(l:categories, 'devicons') < 0
       let g:webdevicons_enable_nerdtree = 0
-      let g:webdevicons_enable_airline_statusline = 0
     else
-      let g:webdevicons_enable_nerdtree = 0
-      let g:webdevicons_enable_airline_statusline = 1
+      let g:webdevicons_enable_nerdtree = 1
     endif
-
-    exec 'set guifont='.escape(a:1, ' \') l:linespace
-
-    " Reset Airline
-    call s:resetAirline()
 
     " Resets webdevicons so NERDTree and Airline get updated
     if exists('*webdevicons#refresh')
@@ -591,11 +582,14 @@ fun s:listCategories(catalogPath, ...)
         return '-> Font: "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
-" s:resetAirline() <<<
+" s:resetAirline(allow) <<<
+" Params: a:allow v:true to allow airline powerline symbols. v:false
+" otherwise.
 " Resets Airline configuration.
 " ----------------------------------------------------------------------------
-fun s:resetAirline()
-  if g:airline_powerline_fonts
+fun s:resetAirline(allow)
+  if a:allow
+    let g:airline_powerline_fonts = 1
     let g:airline_left_sep = "\ue0b0"
     let g:airline_left_alt_sep = "\ue0b1"
     let g:airline_right_sep = "\ue0b2"
@@ -618,10 +612,11 @@ fun s:resetAirline()
           \}
     call extend(g:airline_symbols, l:powerline_symbols, 'force')
   else
+    let g:airline_powerline_fonts = 0
     let g:airline_left_sep = ""
-    let g:airline_left_alt_sep = '|'
+    let g:airline_left_alt_sep = '〉'
     let g:airline_right_sep = ""
-    let g:airline_right_alt_sep = '|'
+    let g:airline_right_alt_sep = '〈'
 
     let g:airline#extensions#tabline#left_sep = ''
     let g:airline#extensions#tabline#left_alt_sep = ''
@@ -629,14 +624,14 @@ fun s:resetAirline()
     let g:airline#extensions#tabline#right_alt_sep = '|'
 
     let l:powerline_symbols = {
-          \ 'readonly': 'RO',
-          \ 'whitespace': '!',
-          \ 'linenr': 'ln ',
+          \ 'readonly': '∅',
+          \ 'whitespace': "Ξ",
+          \ 'linenr': 'Δ ',
           \ 'maxlinenr': ' :',
-          \ 'branch': '',
-          \ 'notexists': '?',
-          \ 'crypt': 'cr',
-          \ 'dirty': '!',
+          \ 'branch': 'Ψ',
+          \ 'notexists': 'Θ',
+          \ 'crypt': '◊',
+          \ 'dirty': 'ϟ',
           \}
     call extend(g:airline_symbols, l:powerline_symbols, 'force')
   endif
