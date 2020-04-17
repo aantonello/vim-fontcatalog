@@ -20,7 +20,7 @@ command -nargs=+ -complete=customlist,fontcatalog#listCategories FontAdd :call f
 command -nargs=* -complete=customlist,fontcatalog#listCategories FontRm :call fontcatalog#removeCurrent(<f-args>)
 
 " Remove an specified font from all categories in the catalog.
-command -nargs=1 -complete=customlist,fontcatalog#listFonts FontRmFont :call fontcatalog#removeFont(<args>)
+command -nargs=1 -complete=customlist,fontcatalog#listFonts FontRmFont :call fontcatalog#removeFont(<f-args>)
 
 " Remove a category from the catalog.
 command -nargs=1 -complete=customlist,fontcatalog#listCategories FontRmCat :call fontcatalog#removeCategory(<f-args>)
