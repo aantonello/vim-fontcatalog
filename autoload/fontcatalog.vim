@@ -215,12 +215,24 @@ fun fontcatalog#useFont(...)
   else
     exec 'set guifont='.escape(a:1, ' \')
 
+    " Check if this font has spacement needs
+    let l:categories = s:fontListCategories(catalogPath, a:1)
+    let l:lineSpacing = '0'
+
+    let l:item = l:categories->filter('v:val =~? "^space.*"')
+    if !l:item->empty()
+      let l:lineSpacing = l:item[0]->matchstr('\d\+$')
+      if l:lineSpacing->empty()
+        let l:lineSpacing = '0'
+      endif
+    endif
+    echomsg 'lineSpacing is '.l:lineSpacing
+
     " Record the last used font configuration
     call s:writeCategory(catalogPath, '.lastused', [a:1])
   endif
 endfunc " >>>
 " fontcatalog#setDefault() <<<
-" @param name Name of the default font.
 " @returns Nothing
 fun fontcatalog#setDefault()
     if exists('g:fc_DontUseDefault') && g:fc_DontUseDefault == 1
@@ -228,7 +240,7 @@ fun fontcatalog#setDefault()
     endif
 
     let defaultFont = ''
-    if exists('g:fc_DefaultFont') && strlen(g:fc_DefaultFont) > 0
+    if exists('g:fc_DefaultFont') && !empty(g:fc_DefaultFont)
         let defaultFont = g:fc_DefaultFont
     else
         let catalogPath = s:checkConfig()
@@ -465,8 +477,10 @@ endfun  " >>>
 " @returns Nothing.
 " ============================================================================
 fun s:removeFromCategories(catalogPath, spec, ...)
-    for l:categoryName in a:000
-        let l:fontList = s:readCategory(a:catalogPath, l:categoryName)
+    let l:categoriesList = s:catalogList(a:catalogPath)
+
+    for name in l:categoriesList
+        let l:fontList = s:readCategory(a:catalogPath, name)
         if !empty(l:fontList)
             call filter(l:fontList, 'v:val !=? "'.a:spec.'"')
             call s:writeCategory(a:catalogPath, l:categoryName, l:fontList)
@@ -551,10 +565,10 @@ fun s:listCategories(catalogPath, ...)
     let l:fontSpec = a:0 ? a:1 : &guifont
     let l:foundCategories = s:fontListCategories(a:catalogPath, l:fontSpec)
 
-    if empty(l:foundCategories)
+    if l:foundCategories->empty()
         return '"'.l:fontSpec.'" not found in catalog'
     else
-        call sort(l:foundCategories)
+        l:foundCategories->sort()
         return '-> Font: "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
