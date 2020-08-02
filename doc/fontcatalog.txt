@@ -5,110 +5,117 @@ Author: Alessandro Antonello <antonello.ale@gmail.com>
 
 License:    This plugin is under GPLv3 license.  This basically means that you
             are free  to copy,  share,  distribute,  sell or change  it as you
-            like.  There are no warranties though.
+            like. There are no warranties though.
 
 ==============================================================================
                                                            *fontcatalog-index*
 1. Contents                                             *fontcatalog-contents*
 
-        1. Contents..................................: |fontcatalog-contents|
-        2. What is this plugin for?..................: |fontcatalog-whatis|
-        3. Installing................................: |fontcatalog-install|
-        4. Options...................................: |fontcatalog-options|
-        5. Commands..................................: |fontcatalog-commands|
-            :FontAdd                                 : |:FontAdd|
-            :FontRm                                  : |:FontRm|
-            :FontRmFont                              : |:FontRmFont|
-            :FontRmCat                               : |:FontRmCat|
-            :FontCategories                          : |:FontCategories|
-            :Fonts                                   : |:Fonts|
-            :Font                                    : |:Font|
-        6. Mappings..................................: |fontcatalog-mappings|
-        7. Functions.................................: |fontcatalog-functions|
-        8. ChangeLog.................................: |fontcatalog-changes|
-        9. Todo......................................: |fontcatalog-todo|
+        1. Contents.................................: |fontcatalog-contents|
+        2. What is this plugin for?.................: |fontcatalog-whatis|
+        3. Installing...............................: |fontcatalog-install|
+        4. Categories...............................: |fontcatalog-categories|
+        5. Options..................................: |fontcatalog-options|
+        6. Commands.................................: |fontcatalog-commands|
+            :FontAdd                                : |:FontAdd|
+            :FontRm                                 : |:FontRm|
+            :FontRmFont                             : |:FontRmFont|
+            :FontRmCat                              : |:FontRmCat|
+            :FontCategories                         : |:FontCategories|
+            :Fonts                                  : |:Fonts|
+            :Font                                   : |:Font|
+        7. Mappings.................................: |fontcatalog-mappings|
+        8. Functions................................: |fontcatalog-functions|
+        9. ChangeLog................................: |fontcatalog-changes|
+       10. Todo.....................................: |fontcatalog-todo|
 
 ==============================================================================
 2. What is this plugin for?                               *fontcatalog-whatis*
 
-        Some  people like  to use  Vim  in  a  terminal  window. Simple, still
-        efficient.  Some people  use Vim in  the GUI.  Most,  maybe,  choose a
-        single font and stick with it for a very long time.  Others, including
-        my self,  like to  change font from time to  time,  or from session to
-        session. For this kind of people, open the font list dialog every time
-        he/she needs to choose another font may be boring or  cumbersome.  For
-        this kind of people this plugin may be useful.
+        I made  this plugin for  my special needs.  I  like to use  GVim in my
+        development sessions.  I usually work  with several direfent projects.
+        Native C++  projects,  native iOS projects,  native  Android projects,
+        hybrid mobile projects, etc... Since my job list is so ecletic, I like
+        to present each development environment in a different font,  so I can
+        distinguish each of then just by glinpse the GVim window.
 
-        This plugin enables you to choose a font from the font list dialog and
-        set a  category for it.  A  category is simply  a name like  'bold' or
-        'italic' with will be used to list fonts alike.  Maybe an example will
-        clarify things better.
-
-        I like the "Consolas" font. So I can load it using the font list dialog:
->
-        :Fonts *
-<
-        Upon selected GUI Vim will start using it. It looks great on Windows
-        but on Mac OS X it is a little heavy when used with dark backgrounds.
-        So I put it in a category:
->
-        :FontAdd regular bold italic heavy-on-dark
-<
-        Well,  that was  four categories actualy:  'regular' because  it has a
-        regular size.  'bold' because it has a bold version.  MacVim is unable
-        to fake  bold and italic styles like Windows,  so it's useful  to have
-        categories that tell if a font  has a style or not.  'italic' was also
-        created for  that  matter.  Finally  'heavy-on-dark'  because  it is a
-        little heavy in dark backgrounds.
-
-        The font 'Letter  Gothic Std Medium' has a  thin shape.  Good for dark
-        backgrounds.  It also has  'bold' and 'italic' variants.  So  I put it
-        on these categories:
->
-        :FontAdd regular bold italic ok-on-dark
-<
-        Meaning this font is Ok on dark backgrounds. After I add several fonts
-        to my catalog I can list and set then in a more easily fashion:
->
-        :Fonts ok-on-dark
-<
-        Will list all fonts that I  put in that category.  Lets pretend that I
-        want to use 'Letter Gothic Std Medium'.  I can type:
->
-        :Font let<Tab>
-<
-        The name will  be completed for me.  I  can change the size  if I want
-        to.  Pressing <Enter>  the chosen font  will be used  by GVim throught
-        the command 'set guifont=<Font>'.  Spaces in the font name are scaped,
-        if needed.
+        This plugin make it ease to  select a font from a internal catalog.  I
+        prefer to use an internal catalog  becouse the windows to select fonts
+        from system present a bunch of names that I don't use. Also it normaly
+        requires a mouse what I don't like.
 
 ==============================================================================
 3. Installing                                            *fontcatalog-install*
 
-        Installation   is   very   simple.   There   are   just   two   files:
-        'fontcatalog.vim' and 'fontcatalog.txt'.  Put 'fontcatalog.vim' in the
-        plugins directory  and 'fontcatalog.txt'  in the  doc directory.  Open
-        Vim and type:
+        1. Using Pathogen (https://github.com/tpope/vim-pathogen).
+
+        Create  a  directory  named  'fontcatalog'  in  you  'bundle'  folder.
+        Navigate to that directory them clone this repo:
+>
+        git clone https://github.com/aantonello/vim-fontcatalog.git .
+<
+        2. Using vim-plug (https://github.com/junegunn/vim-plug).
+
+        Add this in your '.vimrc' file:
+>
+        Plug 'https://github.com/aantonello/vim-fontcatalog.git'
+<
+        3. Vimball.       
+
+        Download the file 'fontcatalog.vmb' in the 'install' folder and source
+        it:
+>
+        vim fontcatalog.vmp
+        :so %
+<
+        After the installation ends build the tags for documents help.
 >
         :helptags ~/.vim/doc
 <
-        Also,  a VimBall  file is provided.  You  can source 'fontcatalog.vmb'
-        and files will be magically installed. Open that file on Vim and type:
->
-        :so %
-<
-        And that is it.
-
-        Any plugin manager can be used.  If you like Pathogen,  as myself, you
-        can use  it.  Clone the  repository at your  bundle directory  and the
-        pathogen      plugin       will      do       the      rest.       See
-        'https://github.com/tpope/pathogen.vim' for more information:
->
-        cd ~/.vim/bundle
-        git clone https://github.com/aantonello/vim-fontcatalog
-<
 ==============================================================================
-4. Options                                               *fontcatalog-options*
+4. Categories                                         *fontcatalog-categories*
+
+        A category is just a name.  It can be used to add properties to a font
+        for its selection. For example, the Windows operating system can mimic
+        the 'bold'  and 'italic' styles even  when a font  doesn't support it.
+        The OSX operating system cannot  do this.  You could use categories to
+        list fonts that support only 'bold' style, or both 'bold' and 'italic'
+        styles.
+
+        To create  a category  you just add  a font  to it.  Suppose  you have
+        selected a "Monaco"  font.  It  could  be  done  using the |'guifont'|
+        option,  through the Font dialog or using the |:Font| command.  To add
+        it in the 'bold' category you issue:
+>
+        :FontAdd bold
+<
+        In the command window.
+
+        To list all fonts in the 'bold' category you can type:
+>
+        :Fonts bold
+<
+        You  can  see all  fonts  in more  than  one  category  by  adding the
+        categories in the command above:
+>
+        :Fonts bold italic
+<
+        In the same  way,  you  can  add  the  current  font  to more than one
+        category in the same command:
+>
+        :FontAdd bold italic
+<
+        There is an special category that can be used to set the space between
+        text lines of a font. There are fonts with no space between the lines.
+        Say,  for  example,  'Lekton Nerd  Font Complete  Regular'.  Using the
+        category "spacex1"  you instruct the  plugin to set  the |'linespace'|
+        option to  1.  If you add the  category "space_2" the  plugin will set
+        |'linespace'| to  2.  In fact,  the category  name need to  start with
+        "space"    and    end    with    a    number.    You    could    write
+        "space_to_add_between_lines_2" and it will work just fine.
+
+==============================================================================
+5. Options                                               *fontcatalog-options*
 
                                                         *'g:fc_CatalogFolder'*
         This  option  sets the  directory  where  categories  will  be stored.
@@ -137,6 +144,14 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         use.
 
 
+                                                       *'g:fc_DontUseDefault'*
+        Disalow the plugin  to load the default font.  The  set defined in the
+        |'g:fc_DefaultFont'| or from a previous sessions.
+>
+        let g:fc_DontUseDefault = 1
+<
+
+
                                                       *'g:loaded_fontcatalog'*
         If you want to  disable the plugin from loading just  set this in your
         'vimrc' file.
@@ -146,7 +161,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         And restart GVim. The plugin will not be loaded.
 
 ==============================================================================
-5. Commands                                             *fontcatalog-commands*
+6. Commands                                             *fontcatalog-commands*
 
                                                                     *:FontAdd*
 :FontAdd {category} [category] [...]
@@ -234,7 +249,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 <
 
 ==============================================================================
-6. Mappings                                             *fontcatalog-mappings*
+7. Mappings                                             *fontcatalog-mappings*
 
         There is no  mappings defined in the plugin.  You  can create your own
         if you want to.  You can put  your mappings in the 'gvimrc' file since
@@ -242,11 +257,12 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         available.
 
 ==============================================================================
-7. Functions                                            *fontcatalog-functions*
+8. Functions                                            *fontcatalog-functions*
 
         The plugin  has all functionality defined  in autoload functions.  You
         can see the file  'autoload/fontcatalog.vim' for help.  Most notorious
         is the |fontcatalog#fontCategories()| function.
+
 
                                                 *fontcatalog#fontCategories()*
 fontcatalog#fontCategories({font})
@@ -256,7 +272,12 @@ fontcatalog#fontCategories({font})
         have the size defined. If not passed the current front will be used.
 
 ==============================================================================
-8. ChangeLog                                             *fontcatalog-changes*
+9. ChangeLog                                             *fontcatalog-changes*
+
+August 2, 2020 (version: 1.2.1)
+    1. Fixed a bug in the |:FontRm| command not removing the selected font.
+    2. Added the possibility to set linespace of a font using an specific
+       category name.
 
 December 30, 2018 (version: 1.2)
     autload/fontcatalog.vim
@@ -296,12 +317,10 @@ May 13, 2014:
         * fontcatalog.txt (version 1.0): First release.
 
 ==============================================================================
-9. Todo                                                     *fontcatalog-todo*
+10. Todo                                                    *fontcatalog-todo*
 
         1)  Better  font selection  method.  Maybe  using  quickfix  window or
         something like that.
-        2)  Script functions  could be  passed to  'autoload' directory.  Will
-        speed up Vim loading time.
 
 ==============================================================================
 vim:tw=78:ts=4:sw=4:ft=help:

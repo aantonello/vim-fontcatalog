@@ -217,16 +217,18 @@ fun fontcatalog#useFont(...)
 
     " Check if this font has spacement needs
     let l:categories = s:fontListCategories(catalogPath, a:1)
-    let l:lineSpacing = '0'
+    let l:lineSpacing = 0
 
     let l:filtered = l:categories->filter('v:val =~? "^space.*"')
     if len(l:filtered) > 0
-      let l:lineSpacing = l:filtered[0]->matchstr('\d\+$')
-      if l:lineSpacing->empty()
-        let l:lineSpacing = '0'
+      let l:matched = l:filtered[0]->matchstr('\d\+$')
+      if l:matched->empty()
+        let l:lineSpacing = 0
+      else
+        let l:lineSpacing = l:matched->str2nr()
       endif
     endif
-    echomsg 'lineSpacing is '.l:lineSpacing
+    let &linespace=l:lineSpacing
 
     " Record the last used font configuration
     call s:writeCategory(catalogPath, '.lastused', [a:1])
