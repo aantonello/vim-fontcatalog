@@ -570,7 +570,7 @@ fun s:listCategories(catalogPath, ...)
     if l:foundCategories->empty()
         return '"'.l:fontSpec.'" not found in catalog'
     else
-        l:foundCategories->sort()
+        call sort(l:foundCategories)
         return '-> Font: "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
