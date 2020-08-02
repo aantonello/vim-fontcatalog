@@ -219,9 +219,9 @@ fun fontcatalog#useFont(...)
     let l:categories = s:fontListCategories(catalogPath, a:1)
     let l:lineSpacing = '0'
 
-    let l:item = l:categories->filter('v:val =~? "^space.*"')
-    if !l:item->empty()
-      let l:lineSpacing = l:item[0]->matchstr('\d\+$')
+    let l:filtered = l:categories->filter('v:val =~? "^space.*"')
+    if !empty(l:filtered)
+      let l:lineSpacing = l:filtered[0]->matchstr('\d\+$')
       if l:lineSpacing->empty()
         let l:lineSpacing = '0'
       endif
