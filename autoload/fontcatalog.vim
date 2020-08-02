@@ -220,7 +220,7 @@ fun fontcatalog#useFont(...)
     let l:lineSpacing = '0'
 
     let l:filtered = l:categories->filter('v:val =~? "^space.*"')
-    if !empty(l:filtered)
+    if len(l:filtered) > 0
       let l:lineSpacing = l:filtered[0]->matchstr('\d\+$')
       if l:lineSpacing->empty()
         let l:lineSpacing = '0'
