@@ -213,22 +213,7 @@ fun fontcatalog#useFont(...)
     let l:paramList = [catalogPath]
     echo call(function('s:listCategories'), l:paramList)
   else
-    exec 'set guifont='.escape(a:1, ' \')
-
-    " Check if this font has spacement needs
-    let l:categories = s:fontListCategories(catalogPath, a:1)
-    let l:lineSpacing = 0
-
-    let l:filtered = l:categories->filter('v:val =~? "^space.*"')
-    if len(l:filtered) > 0
-      let l:matched = l:filtered[0]->matchstr('\d\+$')
-      if l:matched->empty()
-        let l:lineSpacing = 0
-      else
-        let l:lineSpacing = l:matched->str2nr()
-      endif
-    endif
-    let &linespace=l:lineSpacing
+    call s:selectFont(a:1, catalogPath)
 
     " Record the last used font configuration
     call s:writeCategory(catalogPath, '.lastused', [a:1])
@@ -237,26 +222,26 @@ endfunc " >>>
 " fontcatalog#setDefault() <<<
 " @returns Nothing
 fun fontcatalog#setDefault()
-    if exists('g:fc_DontUseDefault') && g:fc_DontUseDefault == 1
-        return
-    endif
+  if exists('g:fc_DontUseDefault') && g:fc_DontUseDefault == 1
+    return
+  endif
 
-    let defaultFont = ''
-    if exists('g:fc_DefaultFont') && !empty(g:fc_DefaultFont)
-        let defaultFont = g:fc_DefaultFont
-    else
-        let catalogPath = s:checkConfig()
-        if strlen(catalogPath) > 0
-            let l:fontList = s:fontList(catalogPath, '.lastused')
-            if len(l:fontList) > 0
-                let defaultFont = l:fontList[0]
-            endif
-        endif
+  let catalogPath = s:checkConfig()
+  let defaultFont = ''
+  if exists('g:fc_DefaultFont') && !empty(g:fc_DefaultFont)
+    let defaultFont = g:fc_DefaultFont
+  else
+    if strlen(catalogPath) > 0
+      let l:fontList = s:fontList(catalogPath, '.lastused')
+      if len(l:fontList) > 0
+        let defaultFont = l:fontList[0]
+      endif
     endif
+  endif
 
-    if strlen(defaultFont) > 0
-        call fontcatalog#useFont(defaultFont)
-    endif
+  if strlen(defaultFont) > 0
+    call s:selectFont(defaultFont, catalogPath)
+  endif
 endfun  " >>>
 " fontcatalog#fontsIn(...) <<<
 " List all fonts within a category or categories.
@@ -574,5 +559,25 @@ fun s:listCategories(catalogPath, ...)
         return '-> Font: "'.l:fontSpec.'"'."\n\t".join(l:foundCategories, ', ')
     endif
 endfun  " >>>
+" s:selectFont(name, catalogPath) <<<
+fun s:selectFont(name, catalogPath)
+  exec 'set guifont='.escape(a:name, ' \')
+
+  " Check if this font has linespace needs
+  let l:categories = s:fontListCategories(a:catalogPath, a:name)
+  let l:lineSpacing = 0
+
+  let l:filtered = l:categories->filter('v:val =~? "^space.*"')
+  if len(l:filtered) > 0
+    let l:matched = l:filtered[0]->matchstr('\d\+$')
+    if l:matched->empty()
+      let l:lineSpacing = 0
+    else
+      let l:lineSpacing = l:matched->str2nr()
+    endif
+  endif
+  let &linespace=l:lineSpacing
+endfun
+" s:selectFont(name) >>>
 
 " vim:ff=unix:fdm=marker:fmr=<<<,>>>
