@@ -164,6 +164,7 @@ endfun  " >>>
 fun fontcatalog#removeFont(name)
     let catalogPath = s:checkConfig()
     if strlen(catalogPath) == 0
+        call s:msgEcho('error', 'Catalog directory not set!')
         return
     endif
 
@@ -363,8 +364,6 @@ fun s:checkConfig()
     endif
 
     if strlen(result) == 0
-        call s:msgEcho('error', 'No storage folder was set')
-        echohl None
         return ''
     endif
 
@@ -373,7 +372,6 @@ fun s:checkConfig()
     endif
 
     if !isdirectory(result)
-        call s:msgEcho('error', 'Could not found font catalog on "'.result.'" path')
         return ''
     endif
 
@@ -385,13 +383,7 @@ endfun  " >>>
 " @returns A list with the file names.
 " ============================================================================
 fun s:catalogList(catalogPath)
-    let l:categoriesList = []
-    let l:categories = globpath(a:catalogPath, '*')
-    if strlen(l:categories) == 0
-        return []
-    else
-        let l:categoriesList = split(l:categories, "\n")
-    endif
+    let l:categoriesList = globpath(a:catalogPath, '*', v:true, v:true)
 
     " Remove .lastused and .allfonts from the list
     call filter(l:categoriesList, 'v:val !=? ".lastused"')
@@ -406,12 +398,8 @@ endfun  " >>>
 " @returns A list where each line has a Font specification.
 " ============================================================================
 fun s:readCategory(catalogPath, name)
-    let l:foundFiles = globpath(a:catalogPath, a:name)
-    if strlen(l:foundFiles) == 0
-        return []
-    endif
+    let l:filesList = globpath(a:catalogPath, a:name, v:true, v:true)
 
-    let l:filesList = split(l:foundFiles, "\n")
     let l:selectedFile = l:filesList[0]
 
     if filereadable(l:selectedFile)
@@ -465,12 +453,16 @@ endfun  " >>>
 " ============================================================================
 fun s:removeFromCategories(catalogPath, spec, ...)
     let l:categoriesList = s:catalogList(a:catalogPath)
+    if empty(l:categoriesList)
+        call s:msgEcho('warn', 'No category found!')
+        return
+    endif
 
     for name in l:categoriesList
         let l:fontList = s:readCategory(a:catalogPath, name)
         if !empty(l:fontList)
-            call filter(l:fontList, 'v:val !=? "'.a:spec.'"')
-            call s:writeCategory(a:catalogPath, l:categoryName, l:fontList)
+            let l:fontList = filter(l:fontList, {i, v -> v !=? a:spec})
+            call s:writeCategory(a:catalogPath, name, l:fontList)
         endif
     endfor
 endfun  " >>>
@@ -580,4 +572,4 @@ fun s:selectFont(name, catalogPath)
 endfun
 " s:selectFont(name) >>>
 
-" vim:ff=unix:fdm=marker:fmr=<<<,>>>
+" vim:ff=unix:fdm=marker:fmr=<<<,>>>:ts=4:sw=4

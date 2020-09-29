@@ -14,25 +14,25 @@ let g:loaded_fontcatalog = 1
 
 "" Commands
 " Add the current font to one or more categories
-command -nargs=+ -complete=customlist,fontcatalog#listCategories FontAdd :call fontcatalog#addFont(<f-args>)
+command -nargs=+ -complete=customlist,fontcatalog#listCategories  FontAdd         :call fontcatalog#addFont(<f-args>)
 
 " Remove the current font from one or more categories in the catalog.
-command -nargs=* -complete=customlist,fontcatalog#listCategories FontRm :call fontcatalog#removeCurrent(<f-args>)
+command -nargs=* -complete=customlist,fontcatalog#listCategories  FontRm          :call fontcatalog#removeCurrent(<f-args>)
 
 " Remove an specified font from all categories in the catalog.
-command -nargs=1 -complete=customlist,fontcatalog#listFonts FontRmFont :call fontcatalog#removeFont(<f-args>)
+command -nargs=1 -complete=customlist,fontcatalog#listFonts       FontRmFont      :call fontcatalog#removeFont(<f-args>)
 
 " Remove a category from the catalog.
-command -nargs=1 -complete=customlist,fontcatalog#listCategories FontRmCat :call fontcatalog#removeCategory(<f-args>)
+command -nargs=1 -complete=customlist,fontcatalog#listCategories  FontRmCat       :call fontcatalog#removeCategory(<f-args>)
 
 " Lists the current categories
-command -nargs=? -complete=customlist,fontcatalog#listCategories FontCategories :echo fontcatalog#categoryInfo(<f-args>)
+command -nargs=? -complete=customlist,fontcatalog#listCategories  FontCategories  :echo fontcatalog#categoryInfo(<f-args>)
 
 " List all fonts within a category or categories.
-command -nargs=* -complete=customlist,fontcatalog#listCategories Fonts :echo fontcatalog#fontsIn(<f-args>)
+command -nargs=* -complete=customlist,fontcatalog#listCategories  Fonts           :echo fontcatalog#fontsIn(<f-args>)
 
 " Sets a font to be used.
-command -nargs=? -complete=customlist,fontcatalog#listFonts Font :call fontcatalog#useFont(<f-args>)
+command -nargs=? -complete=customlist,fontcatalog#listFonts       Font            :call fontcatalog#useFont(<f-args>)
 
 " Set a default font or use one from the previous session. We build an
 " 'autocmd' because this script is sourced before the GUI enters.
