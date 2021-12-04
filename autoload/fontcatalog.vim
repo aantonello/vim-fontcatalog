@@ -234,7 +234,7 @@ fun fontcatalog#setDefault()
   else
     if strlen(catalogPath) > 0
       let l:fontList = s:fontList(catalogPath, '.lastused')
-      if len(l:fontList) > 0
+      if !empty(l:fontList)
         let defaultFont = l:fontList[0]
       endif
     endif
@@ -399,6 +399,9 @@ endfun  " >>>
 " ============================================================================
 fun s:readCategory(catalogPath, name)
     let l:filesList = globpath(a:catalogPath, a:name, v:true, v:true)
+    if empty(l:filesList)
+        return []
+    endif
 
     let l:selectedFile = l:filesList[0]
 
@@ -496,6 +499,10 @@ endfun  " >>>
 " ============================================================================
 fun s:fontList(catalogPath, ...)
     let l:fontList = []
+
+    if !isdirectory(a:catalogPath)
+        return l:fontList
+    endif
 
     if a:0 == 0
         let l:fontList = s:readCategory(a:catalogPath, '.allfonts')
