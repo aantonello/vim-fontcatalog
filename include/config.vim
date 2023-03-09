@@ -11,4 +11,4 @@ export def Check(): string
   return expand(catalogFolder)
 enddef
 
-:defcompile
+#:defcompile

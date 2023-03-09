@@ -129,4 +129,32 @@ export def List(): dict<any>
   return result
 enddef
 
+# Return information of a font.
+# @param font Font name.
+# @return A dictionary with the following format:
+# {
+#   'font name': [ 'category1', 'category2', ... ]
+# }
+# ----------------------------------------------------------------------------
+export def Current(font: string): dict<any>
+  const catalogFolder = config.Check()
+  const categoryList  = file.CatalogList(catalogFolder)
+
+  var fontList: list<string>
+  var categories: list<string>
+  var result: dict<any>
+
+  for category in categoryList
+    fontList = file.CategoryRead(catalogFolder, category)
+    if fontList->index(font) >= 0
+      categories = result->get(font, [])
+      categories->add(category)
+      categories->sort()
+      result[font] = categories
+    endif
+  endfor
+
+  return result
+enddef
+
 #:defcompile

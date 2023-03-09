@@ -41,7 +41,7 @@ export def CategoryWrite(filePath: string, name: string, data: list<string>): vo
     mkdir(filePath, 'p')
   endif
   const fileName = simplify(filePath .. '/' .. name)
-  writefile(data, fileName)
+  writefile(data, fileName, 's')
 enddef
 
 # List all categories present in the catalog folder.
