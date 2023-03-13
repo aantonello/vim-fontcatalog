@@ -60,4 +60,15 @@ export def CatalogList(catalogPath: string): list<string>
   return categoryList
 enddef
 
+# Deletes a file from the catalog folder.
+# @param catalogPath The path to the catalog.
+# @param fileName Name of the file (category) to be removed.
+# @return On success the function returns TRUE. Otherwise, an error is thrown.
+# ----------------------------------------------------------------------------
+export def Delete(catalogPath: string, fileName: string): bool
+  const filePath = simplify(catalogPath .. '/' .. fileName)
+  delete(filePath)
+  return true
+enddef
+
 #:defcompile

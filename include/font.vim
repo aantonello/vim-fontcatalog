@@ -102,15 +102,21 @@ export def Remove(font: string, categories: list<string>): void
 enddef
 
 # List all fonts and its categories.
+# @param filter A list of categories to filter the list of fonts. Only fonts
+# in one or all of these categories will be listed.
 # @return A dictionary where each key is the font name and its value is a list
 # of categories:
 # {
 #   'font': [ 'category1', 'category2', ... ]
 # }
 # ----------------------------------------------------------------------------
-export def List(): dict<any>
+export def List(filter: list<string> = []): dict<list<string>>
   const catalogFolder = config.Check()
-  const categoryList = file.CatalogList(catalogFolder)
+  var categoryList = file.CatalogList(catalogFolder)
+
+  if !empty(filter)
+    categoryList->filter((index, value) => filter->index(value) >= 0)
+  endif
 
   var result: dict<any>
   var fontList: list<string>
@@ -155,6 +161,22 @@ export def Current(font: string): dict<any>
   endfor
 
   return result
+enddef
+
+# Writes the passed font in the '.lastused' record.
+# @param fontName Optiona.. Name of the font to be written in the '.lastused'
+# record. When missing, no new font will be written.
+# @return The name of the last font recorded as last used.
+# ----------------------------------------------------------------------------
+export def LastUsed(fontName: string = ''): string
+  const catalogFolder = config.Check()
+  const lastUsed = file.CategoryRead(catalogFolder, file.LASTUSED)
+
+  if strlen(fontName) > 0
+    file.CategoryWrite(catalogFolder, file.LASTUSED)
+  endif
+
+  return len(lastUsed) > 0 ? lastUsed[0] : ''
 enddef
 
 #:defcompile

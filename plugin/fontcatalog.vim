@@ -1,45 +1,57 @@
 " Vim Font Catalog Plugin
 " Description: Simple Font Catalog.
-" Version: 1.0
+" Version: 2.0
 " Maintainer: Alessandro Antonello <antonello dot ale at gmail do com>
 " Last Change: May 13, 2014
+"              2023 Março 13
 " License: This script is in plublic domain.
 " ============================================================================
-
 " Load it only once. Or you can disable it easily.
 if exists('g:loaded_fontcatalog') || !has('gui_running')
-    finish
+  finish
 endif
 let g:loaded_fontcatalog = 1
 
-"" Commands
-" Add the current font to one or more categories
-command -nargs=+ -complete=customlist,fontcatalog#listCategories  FontAdd         :call fontcatalog#addFont(<f-args>)
+import '../include/command.vim' as commands
 
-" Remove the current font from one or more categories in the catalog.
-command -nargs=* -complete=customlist,fontcatalog#listCategories  FontRm          :call fontcatalog#removeCurrent(<f-args>)
+"" Initializing global options:
+let g:fc_DontUseDefault = get(g:, 'fc_DontUseDefault', v:false)
+let g:fc_DefaultFont = get(g:, 'fc_DefaultFont', '')
+let g:fc_CatalogFolder = get(g:, 'fc_CatalogFolder', expand('$HOME/.fontcatalog'))
 
-" Remove an specified font from all categories in the catalog.
-command -nargs=1 -complete=customlist,fontcatalog#listFonts       FontRmFont      :call fontcatalog#removeFont(<f-args>)
+" Script local functions: <<<
+if !exists('s:FontCommand')
+  function s:FontCommand(...)
+    if a:0 == 0
+      call commands.Font()
 
-" Remove a category from the catalog.
-command -nargs=1 -complete=customlist,fontcatalog#listCategories  FontRmCat       :call fontcatalog#removeCategory(<f-args>)
+    elseif a:0 == 1
+      call commands.Font(a:1)
 
-" Lists the current categories
-command -nargs=? -complete=customlist,fontcatalog#listCategories  FontCategories  :echo fontcatalog#categoryInfo(<f-args>)
+    else
+      call commands.Font(a:1, a:000[1:])
+    endif
+  endfunction
 
-" List all fonts within a category or categories.
-command -nargs=* -complete=customlist,fontcatalog#listCategories  Fonts           :echo fontcatalog#fontsIn(<f-args>)
+  function s:CategoryCommand(...)
+    if a:0 == 0
+      call commands.Category()
 
-" Sets a font to be used.
-command -nargs=? -complete=customlist,fontcatalog#listFonts       Font            :call fontcatalog#useFont(<f-args>)
+    elseif a:0 == 1
+      call commands.Category(a:1)
 
-" Set a default font or use one from the previous session. We build an
-" 'autocmd' because this script is sourced before the GUI enters.
-" Do nothing if 'g:fc_DontUseDefault' is set.
-if exists('g:fc_DontUseDefault') && g:fc_DontUseDefault == 1
-    finish
+    else
+      call commands.Category(a:1, a:000[1:])
+    endif
+  endfunction
 endif
+" Script local functions: >>>
 
-autocmd GUIEnter * call fontcatalog#setDefault()
-" vim:ff=unix:fdm=marker:fmr=<<<,>>>
+" Comands: <<<
+command -nargs=* -complete=customlist,commands.CompleteFont         Font          :call s:FontCommand(<f-args>)
+command -nargs=* -complete=customlist,commands.CompleteCategory     Category      :call s:CategoryCommand(<f-args>)
+" Comands: >>>
+
+" Schedule de definition of the default font at GUI enter
+autocmd GUIEnter * call commands.SetDefault()
+
