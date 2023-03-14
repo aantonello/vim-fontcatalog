@@ -108,7 +108,7 @@ export def List(categories: list<string> = []): void
   var limit: number = len(names)
   var numlen: number = strchars(printf('%d', limit))
   var fontName: string
-  var output: list<string>
+  var output: list<string> = []
 
   const formatString = '%' .. printf('%d', numlen) .. 'd: %s%s in %s'
 

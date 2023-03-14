@@ -51,7 +51,7 @@ export def FontComplete(argLead: string, cmdLine: string, cursorPos: number): li
     endif
   endif
 
-  if strlen(argLead)
+  if strlen(argLead) > 0
     return matchfuzzy(resultList, argLead, { matchseq: true, limit: 0 })
   else
     return resultList
@@ -98,7 +98,7 @@ export def CategoryComplete(argLead: string, cmdLine: string, cursorPos: number)
       resultList->filter((index, value) => tokens->index(value) < 0)
     endif
 
-    if strlen(argLead)
+    if strlen(argLead) > 0
       resultList = matchfuzzy(resultList, argLead, { matchseq: true, limit: 0 })
     endif
   endif
@@ -173,14 +173,14 @@ export def SetDefault()
   # Check whether we have a default font definition. The option overrides the
   # last used font.
   var fontName = get(g:, 'fc_DefaultFont', '')
-  if strlen(fontName)
+  if strlen(fontName) > 0
     font.Set(fontName)
     return
   endif
 
   # Check whether we have a last used font.
   fontName = font.GetLastUsed()
-  if strlen(fontName)
+  if strlen(fontName) > 0
     font.Set(fontName)
     return
   endif

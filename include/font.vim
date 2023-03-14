@@ -14,9 +14,8 @@ const CURRENT = 'current'
 # @return Nothing.
 # ----------------------------------------------------------------------------
 def AddFont(fontName: string, category: string, path: string): void
-  var fontList: list<string>
+  final fontList: list<string> = file.CategoryRead(path, category)
 
-  fontList = file.CategoryRead(path, category)
   if fontList->index(fontName) < 0
     fontList->add(fontName)
     fontList->sort()
@@ -31,11 +30,9 @@ enddef
 # @return Nothing.
 # ----------------------------------------------------------------------------
 def RemoveFont(fontName: string, category: string, path: string): void
-  var fontList: list<string>
-  var index: number
+  final fontList: list<string> = file.CategoryRead(path, category)
+  const index: number = fontList->index(fontName)
 
-  fontList = file.CategoryRead(path, category)
-  index = fontList->index(fontName)
   if index >= 0
     fontList->remove(index)
     file.CategoryWrite(path, category, fontList)
@@ -50,11 +47,7 @@ enddef
 # ----------------------------------------------------------------------------
 export def Add(font: string, categories: list<string>): void
   const catalogFolder = config.Check()
-  var fontName = font
-
-  if font ==? CURRENT
-    fontName = &guifont
-  endif
+  const fontName = (font !=? CURRENT) ? font : &guifont
 
   for item in categories
     AddFont(fontName, item, catalogFolder)
@@ -73,14 +66,10 @@ enddef
 # ----------------------------------------------------------------------------
 export def Remove(font: string, categories: list<string>): void
   const catalogFolder = config.Check()
-  const allCategories = empty(categories)
+  const allCategories: bool = empty(categories)
 
-  var fontName = font
+  const fontName = (font !=? CURRENT) ? font : &guifont
   var categoryList = categories
-
-  if font ==? CURRENT
-    fontName = &guifont
-  endif
 
   if allCategories
     categoryList = file.CatalogList(catalogFolder)
