@@ -168,4 +168,10 @@ export def Set(fontName: string): void
   font.LastUsed(fontName)
 enddef
 
+# Get the last used font.
+# ----------------------------------------------------------------------------
+export def GetLastUsed(): string
+  return font.LastUsed()
+enddef
+
 #:defcompile

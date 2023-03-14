@@ -19,7 +19,7 @@ let g:fc_DontUseDefault = get(g:, 'fc_DontUseDefault', v:false)
 let g:fc_DefaultFont = get(g:, 'fc_DefaultFont', '')
 let g:fc_CatalogFolder = get(g:, 'fc_CatalogFolder', expand('$HOME/.fontcatalog'))
 
-" Script local functions: <<<
+" Script local functions: {{{
 if !exists('s:FontCommand')
   function s:FontCommand(...)
     if a:0 == 0
@@ -45,12 +45,12 @@ if !exists('s:FontCommand')
     endif
   endfunction
 endif
-" Script local functions: >>>
+" Script local functions: }}}
 
-" Comands: <<<
+" Comands: {{{
 command -nargs=* -complete=customlist,commands.CompleteFont         Font          :call s:FontCommand(<f-args>)
 command -nargs=* -complete=customlist,commands.CompleteCategory     Category      :call s:CategoryCommand(<f-args>)
-" Comands: >>>
+" Comands: }}}
 
 " Schedule de definition of the default font at GUI enter
 autocmd GUIEnter * call commands.SetDefault()
