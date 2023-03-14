@@ -1,4 +1,4 @@
-*fontcatalog.txt*            Font Catalog Plugin                  May 13, 2014
+*fontcatalog.txt*            Font Catalog Plugin                  2023 March 14
 *fontcatalog.vim*                                                *fontcatalog*
 
 Author: Alessandro Antonello <antonello.ale@gmail.com>
@@ -17,32 +17,33 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         4. Categories...............................: |fontcatalog-categories|
         5. Options..................................: |fontcatalog-options|
         6. Commands.................................: |fontcatalog-commands|
-            :FontAdd                                : |:FontAdd|
-            :FontRm                                 : |:FontRm|
-            :FontRmFont                             : |:FontRmFont|
-            :FontRmCat                              : |:FontRmCat|
-            :FontCategories                         : |:FontCategories|
-            :Fonts                                  : |:Fonts|
             :Font                                   : |:Font|
+            :Font add                               : |:Font-add|
+            :Font rm                                : |:Font-rm|
+            :Font set                               : |:Font-set|
+            :Category                               : |:Category|
+            :Category ls                            : |:Category-ls|
+            :Category rm                            : |:Category-rm|
         7. Mappings.................................: |fontcatalog-mappings|
-        8. Functions................................: |fontcatalog-functions|
-        9. ChangeLog................................: |fontcatalog-changes|
-       10. Todo.....................................: |fontcatalog-todo|
+        8. ChangeLog................................: |fontcatalog-changes|
+        9. To do....................................: |fontcatalog-todo|
 
 ==============================================================================
 2. What is this plugin for?                               *fontcatalog-whatis*
 
-        I made  this plugin for  my special needs.  I  like to use  GVim in my
-        development sessions.  I usually work  with several direfent projects.
-        Native C++  projects,  native iOS projects,  native  Android projects,
-        hybrid mobile projects, etc... Since my job list is so ecletic, I like
-        to present each development environment in a different font,  so I can
-        distinguish each of then just by glinpse the GVim window.
+        FontCatalog  is  a  way  to  organize  your  prefered  fonts attaching
+        categories to each  selected font easily.  Since we  are talking about
+        fonts, this plugin doesn't do anything on TTY. It is exclusive for use
+        with GUI Vim version.
 
-        This plugin make it ease to  select a font from a internal catalog.  I
-        prefer to use an internal catalog  becouse the windows to select fonts
-        from system present a bunch of names that I don't use. Also it normaly
-        requires a mouse what I don't like.
+        What is a category?
+
+        A category is just a name.  There  are several fonts that are great to
+        work with  GUI Vim  when writing code  and others  that are  better to
+        write documents, like TeX or Markdown.  There are fonts that have bold
+        typefaces but others don't. Is not easy to remember which font is what
+        when you have a good number of it.  So,  this plugin helps to remember
+        what each font is better for.
 
 ==============================================================================
 3. Installing                                            *fontcatalog-install*
@@ -75,56 +76,50 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 ==============================================================================
 4. Categories                                         *fontcatalog-categories*
 
-        A category is just a name.  It can be used to add properties to a font
-        for its selection. For example, the Windows operating system can mimic
-        the 'bold'  and 'italic' styles even  when a font  doesn't support it.
-        The OSX operating system cannot  do this.  You could use categories to
-        list fonts that support only 'bold' style, or both 'bold' and 'italic'
-        styles.
+        A category is just a name. It can be used to bind properties to a font
+        to help identify  what  its  is  best  for.  For example,  the Windows
+        operating system can mimic the 'bold'  and 'italic' styles even when a
+        font doesn't support  it.  The macOS operating system  cannot do this.
+        You could use categories to list fonts that support only 'bold' style,
+        or both 'bold' and 'italic' styles.
 
         To create  a category  you just add  a font  to it.  Suppose  you have
-        selected a "Monaco"  font.  It  could  be  done  using the |'guifont'|
-        option,  through the Font dialog or using the |:Font| command.  To add
-        it in the 'bold' category you issue:
+        selected the  "DeJaVu" font in your  GUI Vim.  To bin this  font the a
+        'bold' category you can type the following command:
 >
-        :FontAdd bold
+        :Font add bold
 <
-        In the command window.
-
-        To list all fonts in the 'bold' category you can type:
+        To list all fonts bound to the 'bold' category you can type:
 >
-        :Fonts bold
+        :Font ls bold
 <
-        You  can  see all  fonts  in more  than  one  category  by  adding the
-        categories in the command above:
+        or
 >
-        :Fonts bold italic
+        :Category ls bold
 <
-        In the same  way,  you  can  add  the  current  font  to more than one
-        category in the same command:
+        You can  check several categories at  once,  typing several categories
+        names after the 'ls' option:
 >
-        :FontAdd bold italic
+        :Font ls bold italic
 <
-        There is an special category that can be used to set the space between
-        text lines of a font. There are fonts with no space between the lines.
-        Say,  for  example,  'Lekton Nerd  Font Complete  Regular'.  Using the
-        category "spacex1"  you instruct the  plugin to set  the |'linespace'|
-        option to  1.  If you add the  category "space_2" the  plugin will set
-        |'linespace'| to  2.  In fact,  the category  name need to  start with
-        "space"    and    end    with    a    number.    You    could    write
-        "space_to_add_between_lines_2" and it will work just fine.
-
+        In the same  way,  you  can  bind  the  current  font  to more than one
+        category in a single command:
+>
+        :Font add bold italic
+<
 ==============================================================================
 5. Options                                               *fontcatalog-options*
 
                                                         *'g:fc_CatalogFolder'*
         This  option  sets the  directory  where  categories  will  be stored.
-        Categories  are really files that  lists all  fonts added  to it.  You
+        Categories  are simple files that  lists all  fonts bound  to it.  You
         should set this in your 'vimrc'  file because 'gvimrc' is loaded after
         the plugin it self.
 >
-        let g:fc_CatalogFolder = <default: ~/.vim/fontcatalog>
+        let g:fc_CatalogFolder = '$HOME/.fontcatalog'
 <
+        "$HOME/.fontcatalog" is the default.
+
         The plugin will create the directory if it doesn't exist.
 
 
@@ -135,25 +130,27 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 >
         let g:fc_DefaultFont = 'Letter Gothic Std Medium:h12'
 <
-        This also must  be set in 'vimrc' file.  'gvimrc'  will load after the
-        plugin and it will not find this variable.
+        This option must  be set before the plugin is  loaded,  so it can take
+        effect when GUI starts.
 
-        When there is  no default font the  plugin will try to use  one from a
-        previous session.  The  last  used  font,  if  there  is one,  will be
-        selected.  Otherwise it  will let GUI Vim  to figure out  what font to
-        use.
+        When there is no  default font defined the plugin will  try to use one
+        from the previous session.  The last  used font,  if there is one,  it
+        will be  selected.  Otherwise it will let  GUI Vim to  figure out what
+        font to use.
 
 
                                                        *'g:fc_DontUseDefault'*
-        Disalow the plugin  to load the default font.  The  set defined in the
-        |'g:fc_DefaultFont'| or from a previous sessions.
+        Disable the plugin to select a font when GUI Vim starts.  As explained
+        in |'g:fc_DefaultFont'|,  the plugin selects the last used font in the
+        previous session.  This option disable this feature.  Also, the plugin
+        will ignore the |'g:fc_DefaultFont'| option.
 >
         let g:fc_DontUseDefault = 1
 <
 
 
                                                       *'g:loaded_fontcatalog'*
-        If you want to  disable the plugin from loading just  set this in your
+        If you want to disable the plugin from loading,  just set this in your
         'vimrc' file.
 >
         let g:loaded_fontcatalog = 1
@@ -163,116 +160,98 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 ==============================================================================
 6. Commands                                             *fontcatalog-commands*
 
-                                                                    *:FontAdd*
-:FontAdd {category} [category] [...]
-        Adds the current Font in one or more categories. You can use <Tab> for
-        command  line completion  or <CTRL-D>  to  see  a  list  of categories
-        already created.  See  |c_CTRL-D|.  If the category  doesn't exists it
-        will be created. You can add the Font in more than one category in the
-        same command.
->
-        :FontAdd light bold
-<
-
-                                                                     *:FontRm*
-:FontRm [category] [...]
-        Removes the  current Font  from one or  more categories.  You  can use
-        <Tab>  for command  line completion  or  <CTRL-D>  to  see  a  list of
-        available categories.  You can  remove  the  Font  from  more than one
-        category in the  same command.  If no category  name is provided,  the
-        Font will be removed from all categories.
->
-        :FontRm light bold
-<
-                                                                 *:FontRmFont*
-:FontRmFont {Font}
-        Removes the  specified Font from  the catalog.  You can  use <Tab> for
-        command line completion or <CTRL-D> to see a list of fonts.
->
-        :FontRmFont Consolas:h12
-<
-
-                                                                   *:FontRmCat*
-:FontRmCat {category}
-        Will remove a category.  You can use <Tab> for command line completion
-        or  <CTRL-D> for  a list  of categories.  The  deletion will  ask your
-        confirmation before erasing the file from the catalog directory.  Only
-        one category can be deleted at a time.
->
-        :FontRmCat light
-<
-
-                                                             *:FontCategories*
-:FontCategories [categories]
-        Shows a simple  list with all categories found in  the catalog and the
-        number of Fonts on each category.  You  can use <Tab> for command line
-        completion or <CTRL-D> for a  list of categories.  When no argument is
-        passed, all categories are listed.
->
-        :FontCategories
-        bold        > With 2 fonts
-        regular     > With "Consolas:h12" only
-        light       > With "Letter Gothic Std Medium:h12" only
-<
-
-                                                                      *:Fonts*
-:Fonts [category] [...]
-        List all Fonts that are within a category or categories.  The argument
-        is  one or  more category  name.  Completion applies.  When  only one
-        category is  typed all  Fonts in that  category will  be listed.  When
-        more than  one category is typed  Fonts only common  to all categories
-        are listed.
->
-        :Fonts bold
-        Consolas:h12                 in: bold, italic, regular
-        Letter Gothic Std Medium:h12 in: bold, light
-<
-        If you pass '*' (no quotes)  as the single category name,  the command
-        shows the Font List  Dialog so you can select a  Font available in the
-        system.  If you don't pass any category  name nor '*' the command will
-        list all Fonts added to the catalog.
-
                                                                        *:Font*
-:Font [Font]
-        Select a font to  be  used  in  GUI  Vim.  Its  result  is the same as
-        setting the option |'guifont'|.  Its argument is a Font specification,
-        as added  to the catalog.  Completion  applies.  Without arguments the
-        command will show,  in the command bar,  the current Font selected and
-        its categories.
+:Font
+        Show the current selected font name and the categories it is bound to.
+        The output would be:
 >
-        :Font Consolas:h12      " Is the same as...
-        :set guifont=Consolas:h12
-
-        :Font
-        -> Font "Consolas:h12"
-                bold, italic, regular
+        guifont is "DeJaVu Sans Mono:h12" in bold, italic, regular
 <
+
+                                                                   *:Font-add*
+:Font add {category} [category] [...]
+        This command bind the current GUI font with one or more categories. At
+        least one  category name  must be  provided.  If the  category doesn't
+        exists it will be created.
+>
+        :Font add light bold
+<
+
+                                                                    *:Font-rm*
+:Font rm [category] [...]
+        Unbind the current font from one of more categories.  This command can
+        also be  used to remove the  selected font from  the catalog,  when no
+        category name is typed.
+>
+        :Font rm bold
+<
+        The above command unbind the font of 'bold' category.
+>
+        :Font rm
+<
+        The above  command ask your  confirmation before remove  the font from
+        the  catalog.  This way,  the  font will  not be  listed in  any other
+        command any more.
+
+                                                                   *:Font-set*
+:Font set {font-name}
+         Selects a font to be used in GUI Vim. This is like typing the command
+         `:set  guifont=DeJaVu\  Sans\  Mono:h12`  in  the  command line.  The
+         advantage  of using  this command  is  that  it  provides completion.
+         Typing <C-D>  or <TAB> after `:Font  set` will list all  fonts in the
+         catalog.
+
+                                                                    *:Font-ls*
+:Font ls [category]
+        Lists all fonts in the catalog. When [category] is provided, lists all
+        fonts  bound  to  that category.  Each  font  is  listed  in  on line,
+        preceeded by a number.  The command allows  the selection of a font by
+        typing the number in front of it.
+>
+        :Font ls bold
+<
+        Would output:
+>
+        1: DeJaVu Sans Mono:h12 in bold, italic, regular
+        2: Inconsolata:h14      in bold, regular
+        Type the font number to set it (zero to cancel):
+<
+
+                                                                   *:Category*
+:Category
+        The ':Category' command alone provides  the same output as the |:Font|
+        command alone.  Listing the current  selected font name and categories
+        bound to it. The ':Category' command provides some options allowing to
+        performe others operations.
+
+                                                                *:Category-ls*
+:Category ls [category]
+        List all categories in the  catalog,  together with the fonts bound to
+        it.  When [category] is provided,  only that category is listed.  More
+        than one category can be provided.
+>
+        :Category ls bold italic
+<
+        Would list 'bold' and 'italic' categories with the fonts bound to it.
+
+                                                                *:Category-rm*
+:Category rm {category}
+        Remove a category from the catalog.
 
 ==============================================================================
 7. Mappings                                             *fontcatalog-mappings*
 
-        There is no  mappings defined in the plugin.  You  can create your own
+        There are no mappings defined in  the plugin.  You can create your own
         if you want to.  You can put  your mappings in the 'gvimrc' file since
         it is loaded  after  the  plugin  loads  and  the commands are already
         available.
 
 ==============================================================================
-8. Functions                                            *fontcatalog-functions*
+8. ChangeLog                                             *fontcatalog-changes*
 
-        The plugin  has all functionality defined  in autoload functions.  You
-        can see the file  'autoload/fontcatalog.vim' for help.  Most notorious
-        is the |fontcatalog#fontCategories()| function.
-
-
-                                                *fontcatalog#fontCategories()*
-fontcatalog#fontCategories({font})
-        The result is  a |List| with all categories  a font has.  The optional
-        argument  {font}  is  the  font  specification  as  configured  in the
-        catalog.  Note that the specification must be set as a string and must
-        have the size defined. If not passed the current front will be used.
-
-==============================================================================
-9. ChangeLog                                             *fontcatalog-changes*
+March, 14 2023 (version: 2.0.0)
+    1. Convertion to vim9script functions. Autoload functions were removed.
+    2. The plugin was completely rewrote.
 
 August 2, 2020 (version: 1.2.1)
     1. Fixed a bug in the |:FontRm| command not removing the selected font.
@@ -317,10 +296,11 @@ May 13, 2014:
         * fontcatalog.txt (version 1.0): First release.
 
 ==============================================================================
-10. Todo                                                    *fontcatalog-todo*
+9. To do                                                    *fontcatalog-todo*
 
-        1)  Better  font selection  method.  Maybe  using  quickfix  window or
-        something like that.
+        1) Better font selection method. Maybe using quickfix window or a
+        temporary buffer;
+        2) 'linespacing' setting according to font selection.
 
 ==============================================================================
 vim:tw=78:ts=4:sw=4:ft=help:

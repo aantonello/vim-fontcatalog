@@ -49,7 +49,7 @@ export def ListCommand(categories: list<string>): void
   final output: list<string> = []
 
   for [key, value] in resultDict->items()
-    output->add( printf('%s%s-> [ %s ]', key, repeat(' ', maxLength - strlen(key)), value->join(', ')) )
+    output->add( printf('%s%s-> [ "%s" ]', key, repeat(' ', maxLength - strlen(key)), value->join('", "')) )
   endfor
 
   :echomsg output->join('\n')
