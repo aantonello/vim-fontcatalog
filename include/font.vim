@@ -162,10 +162,11 @@ export def LastUsed(fontName: string = ''): string
   const lastUsed = file.CategoryRead(catalogFolder, file.LASTUSED)
 
   if strlen(fontName) > 0
-    file.CategoryWrite(catalogFolder, file.LASTUSED)
+    const fontList: list<string> = [ fontName ]
+    file.CategoryWrite(catalogFolder, file.LASTUSED, fontList)
   endif
 
-  return len(lastUsed) > 0 ? lastUsed[0] : ''
+  return lastUsed->get(0, '')
 enddef
 
 #:defcompile

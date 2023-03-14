@@ -182,7 +182,6 @@ export def SetDefault()
   fontName = font.GetLastUsed()
   if strlen(fontName) > 0
     font.Set(fontName)
-    return
   endif
 enddef
 
