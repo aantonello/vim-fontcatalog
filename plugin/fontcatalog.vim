@@ -48,15 +48,13 @@ if !exists('s:FontCommand')
   function s:CompleteFont(a, c, p)
     return commands.FontComplete(a:a, a:c, a:p)
   endfunction
-
-  function s:CompleteCategory(a, c, p)
-    return commands.CategoryComplete(a:a, a:c, a:p)
-  endfunction
 endif
 " Script local functions: }}}
 
 " Comands: {{{
 command -nargs=* -complete=customlist,s:CompleteFont         Font          :call s:FontCommand(<f-args>)
+
+let s:CompleteCategory = function(commands.CategoryComplete)
 command -nargs=* -complete=customlist,s:CompleteCategory     Category      :call s:CategoryCommand(<f-args>)
 " Comands: }}}
 
