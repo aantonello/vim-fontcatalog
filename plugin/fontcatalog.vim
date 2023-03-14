@@ -44,12 +44,20 @@ if !exists('s:FontCommand')
       call commands.Category(a:1, a:000[1:])
     endif
   endfunction
+
+  function s:CompleteFont(a, c, p)
+    return commands.FontComplete(a:a, a:c, a:p)
+  endfunction
+
+  function s:CompleteCategory(a, c, p)
+    return commands.CategoryComplete(a:a, a:c, a:p)
+  endfunction
 endif
 " Script local functions: }}}
 
 " Comands: {{{
-command -nargs=* -complete=customlist,commands.CompleteFont         Font          :call s:FontCommand(<f-args>)
-command -nargs=* -complete=customlist,commands.CompleteCategory     Category      :call s:CategoryCommand(<f-args>)
+command -nargs=* -complete=customlist,s:CompleteFont         Font          :call s:FontCommand(<f-args>)
+command -nargs=* -complete=customlist,s:CompleteCategory     Category      :call s:CategoryCommand(<f-args>)
 " Comands: }}}
 
 " Schedule de definition of the default font at GUI enter
