@@ -133,7 +133,7 @@ export def Font(subCmd = '', categories: list<string> = []): void
     if empty(categories)
       :echomsg 'A font name is required!'
     else
-      font.Set(categories[0])
+      font.Set(categories->join(' '))
     endif
   else
     # Any other option result in an error:
