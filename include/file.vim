@@ -49,15 +49,16 @@ enddef
 # @return A list of strings with all categories found.
 # ----------------------------------------------------------------------------
 export def CatalogList(catalogPath: string): list<string>
-  var categoryList = globpath(catalogPath, '*', true, true)
+  var catalogList = globpath(catalogPath, '*', true, true)
 
-  if empty(categoryList)
+  if empty(catalogList)
     return []
   endif
 
   # Filter out '.lastused' and '.allfonts'.
-  filter(categoryList, (index, key) => key !=? LASTUSED && key !=? ALLFONTS)
-  return categoryList
+  catalogList->filter((_, key) => key !=? LASTUSED && key !=? ALLFONTS)
+  catalogList->map((_, val) => val->fnamemodify(':t'))
+  return catalogList
 enddef
 
 # Deletes a file from the catalog folder.

@@ -18,7 +18,7 @@ import './font.vim'
 # - 'set': Select a font. Parameter is the font name.
 #   Example: ":Font set Inconsolata:h14"
 # ----------------------------------------------------------------------------
-export const SUBCOMMANDS = [ 'add', 'ls', 'list', 'rm', 'remove', 'set' ]
+export const SUBCOMMANDS = [ 'add', 'ls', 'rm', 'remove', 'set', '*' ]
 
 # List all fonts in the catalog.
 # @return A list with all fonts in the catalog. Only names are listed by this
@@ -95,7 +95,7 @@ export def List(categories: list<string> = []): void
     return
   endif
 
-  var names: list<string>
+  var names: list<string> = []
   var maxLength: number = 0
 
   for name in fontList->keys()
@@ -115,12 +115,14 @@ export def List(categories: list<string> = []): void
   while index < limit
     fontName = names[index]
     output->add(printf(formatString, index + 1, fontName, repeat(' ', maxLength - strlen(fontName)), join(fontList[fontName], ', ')))
+    index = index + 1
   endwhile
 
-  output->add('Type the font number to set it (zero to cancel):')
+  output->add('Type a number to set the GUI font (<ESC> to cancel): ')
 
-  const answer = input(output->join('\n'), '0')
-  if answer != '0'
+  const answer = input(output->join("\n"), '')
+  if answer != '0' && answer != ''
+    :echo "\n"
     index = str2nr(answer, 10) - 1
     if index >= 0 && index < limit
       Set(names[index])
@@ -136,20 +138,39 @@ enddef
 # ----------------------------------------------------------------------------
 export def Remove(categories: list<string> = []): void
   const fontName = &guifont
+  const noFilter: bool = empty(categories)
 
-  if empty(categories)
-    const answer = input('Are you sure to remove ' .. fontName .. ' from the catalog? [y]es or [n]o: ', 'n')
-    if answer ==# 'n'
+  if noFilter
+    const answer = input('Are you sure to remove ' .. fontName .. ' from the catalog? [y]es or [n]o: ', '')
+    if answer == '' || answer ==# 'n'
       return
     endif
+    :echo "\n"
   endif
 
   # The user can by pass the above answer when the only category is '*'
-  if categories[0] == '*'
+  if noFilter || categories[0] == '*'
     font.Remove(fontName, [])
+    :echomsg 'Font "' .. fontName .. '" was removed from catalog.'
   else
     font.Remove(fontName, categories)
+    :echomsg printf('Font "%s" was removed from [ %s ]', fontName, categories->join(', '))
   endif
+enddef
+
+# Remove a font from the catalog.
+# @param fontName String: font to be removed.
+# @return Nothing. Success or failure is shown to the user in the command line
+# as message.
+# ----------------------------------------------------------------------------
+export def Delete(fontName: string): void
+  const answer = input('Are you sure to remove ' .. fontName .. ' from the catalog? [y]es or [n]o: ', '')
+  if answer == '' || answer ==# 'n'
+    return
+  endif
+  :echo "\n"
+
+  font.Remove(fontName, [])
   :echomsg 'Font "' .. fontName .. '" was removed from catalog.'
 enddef
 
@@ -162,10 +183,14 @@ export def Set(fontName: string): void
     return
   endif
 
-  :execute 'silent set guifont=' .. fontName
+  try
+    :execute 'silent set guifont=' .. fontName
 
-  # Also write the name in the 'lastused' record.
-  font.LastUsed(fontName)
+    # Also write the name in the 'lastused' record.
+    font.LastUsed(fontName)
+  catch
+    :echomsg v:exception
+  endtry
 enddef
 
 # Get the last used font.

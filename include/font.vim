@@ -104,10 +104,10 @@ export def List(filter: list<string> = []): dict<list<string>>
   var categoryList = file.CatalogList(catalogFolder)
 
   if !empty(filter)
-    categoryList->filter((index, value) => filter->index(value) >= 0)
+    categoryList->filter((_, value) => filter->index(value) >= 0)
   endif
 
-  var result: dict<any>
+  var result: dict<list<string>> = { }
   var fontList: list<string>
   var categories: list<string>
 
@@ -134,9 +134,6 @@ enddef
 export def Current(font: string): dict<any>
   const catalogFolder = config.Check()
   const categoryList  = file.CatalogList(catalogFolder)
-
-  :echomsg 'font:Current("' .. font .. '")'
-  :echomsg '\tcategoryList: ' .. categoryList->join(', ')
 
   var fontList: list<string>
   var categories: list<string>

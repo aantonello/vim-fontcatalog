@@ -51,8 +51,8 @@ endif
 let s:CompleteFont = function(s:commands.FontComplete)
 command -nargs=* -complete=customlist,s:CompleteFont         Font          :call s:FontCommand(<f-args>)
 
-let s:CompleteCategory = function(s:commands.CategoryComplete)
-command -nargs=* -complete=customlist,s:CompleteCategory     Category      :call s:CategoryCommand(<f-args>)
+let s:ComplateCatalog = function(s:commands.CategoryComplete)
+command -nargs=* -complete=customlist,s:ComplateCatalog      Catalog       :call s:CategoryCommand(<f-args>)
 " Comands: }}}
 
 " Schedule de definition of the default font at GUI enter

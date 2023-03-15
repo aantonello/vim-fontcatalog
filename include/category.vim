@@ -11,7 +11,7 @@ import './file.vim'
 # - 'rm' or 'remove': Remove a category from catalog.
 #   Example: ":Category rm bold" remove the "bold" category.
 # ----------------------------------------------------------------------------
-export const SUBCOMMANDS = [ 'ls', 'list', 'rm', 'remove' ]
+export const SUBCOMMANDS = [ 'ls', 'rm' ]
 
 # Returns the list of categories in the category folder.
 # ----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ export def ListCommand(categories: list<string>): void
   final categoryList = file.CatalogList(catalogFolder)
 
   if !empty(categories)
-    categoryList->filter((index, value) => categories->index(value) >= 0)
+    categoryList->filter((_, value) => categories->index(value) >= 0)
   endif
   categoryList->sort()
 
@@ -49,10 +49,14 @@ export def ListCommand(categories: list<string>): void
   final output: list<string> = []
 
   for [key, value] in resultDict->items()
-    output->add( printf('%s%s-> [ "%s" ]', key, repeat(' ', maxLength - strlen(key)), value->join('", "')) )
+    output->add('at "' .. key .. '":')
+    for item in value
+      output->add(repeat(' ', maxLength) .. item)
+    endfor
+    output->add(repeat('-', maxLength))
   endfor
 
-  :echomsg output->join('\n')
+  :echo output->join("\n")
 
 enddef
 
@@ -63,20 +67,25 @@ enddef
 # ----------------------------------------------------------------------------
 export def Remove(name: string): void
   if strlen(name) == 0
-    :echomsg 'A category name must be provided!'
+    :echo 'A category name must be provided!'
     return
   endif
 
   const catalogFolder = config.Check()
 
   # Ask for user confirmation:
-  const answer = input('Are you sure to remove the category ' .. name .. ' from the catalog? [y]es or [n]o: ', 'n')
-  if answer ==# 'n'
+  const answer = input('Are you sure to remove the category ' .. name .. ' from the catalog? [y]es or [n]o: ', '')
+  if answer == '' || answer ==# 'n'
     return
   endif
+  :echo "\n"
 
-  file.Delete(catalogFolder, name)
-  :echomsg 'Category "' .. name .. '" was removed from catalog.'
+  try
+    file.Delete(catalogFolder, name)
+    :echomsg 'Category "' .. name .. '" was removed from catalog.'
+  catch
+    :echomsg v:exception
+  endtry
 enddef
 
 #:defcompile

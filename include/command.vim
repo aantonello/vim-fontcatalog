@@ -36,7 +36,7 @@ export def FontComplete(argLead: string, cmdLine: string, cursorPos: number): li
   const subCommand   = splittedLine[1]
   var   resultList: list<string> = []
 
-  if subCommand ==# 'set'
+  if subCommand ==# 'set' || subCommand ==# 'remove'
     # Completion is the list of available fonts in catalog.
     resultList = font.ListNames()
   else
@@ -114,8 +114,13 @@ enddef
 export def Font(subCmd = '', categories: list<string> = []): void
   if strlen(subCmd) == 0
     # No subcommand given. Show the current font properties.
-    :echomsg 'guifont is ' .. font.FormattedInfo()
-    return
+    try
+      :echomsg 'guifont ' .. font.FormattedInfo()
+    catch
+      :echomsg v:exception
+    finally
+      return
+    endtry
   endif
 
   if subCmd ==# 'add'
@@ -125,9 +130,15 @@ export def Font(subCmd = '', categories: list<string> = []): void
     # 'list' subcommand shows all fonts. If a category is passed, filter
     # results by that category.
     font.List(categories)
-  elseif subCmd ==# 'rm' || subCmd ==# 'remove'
+  elseif subCmd ==# 'rm'
     # Remove the current font from one or more categories.
     font.Remove(categories)
+  elseif subCmd ==# 'remove'
+    if empty(categories)
+      :echomsg 'A font name is required!'
+    else
+      font.Delete(categories->join(' '))
+    endif
   elseif subCmd ==# 'set'
     # Set the font to be used as guifont.
     if empty(categories)
@@ -135,6 +146,9 @@ export def Font(subCmd = '', categories: list<string> = []): void
     else
       font.Set(categories->join(' '))
     endif
+  elseif subCmd == '*'
+    # Open the font list dialog for user selection
+    :set guifont=*
   else
     # Any other option result in an error:
     :echoerr 'Option "' .. subCmd .. '" not supported!'
@@ -149,8 +163,11 @@ enddef
 export def Category(subCmd: string = '', categories: list<string> = []): void
   if strlen(subCmd) == 0
     # NO sub command given. Show the current font information.
-    :echomsg 'guifont is ' .. font.FormattedInfo()
-  
+    try
+      :echomsg 'guifont is ' .. font.FormattedInfo()
+    catch
+      :echomsg v:exception
+    endtry
   elseif subCmd ==# 'ls' || subCmd ==# 'list'
     category.ListCommand(categories)
 
