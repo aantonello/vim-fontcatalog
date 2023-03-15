@@ -98,7 +98,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 <
         or
 >
-        :Category ls bold
+        :Catalog ls bold
 <
         You can  check several categories at  once,  typing several categories
         names after the 'ls' option:
@@ -226,7 +226,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 >
         1: DeJaVu Sans Mono:h12 in bold, italic, regular
         2: Inconsolata:h14      in bold, regular
-        Type the font number to set it (zero to cancel):
+        Type a number to set the GUI font (<ESC> to cancel):
 <
                                                                   *:Font-star*
 :Font *
