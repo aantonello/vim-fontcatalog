@@ -20,10 +20,13 @@ License:    This plugin is under GPLv3 license.  This basically means that you
             :Font                                   : |:Font|
             :Font add                               : |:Font-add|
             :Font rm                                : |:Font-rm|
+            :Font remove                            : |:Font-remove|
             :Font set                               : |:Font-set|
-            :Category                               : |:Category|
-            :Category ls                            : |:Category-ls|
-            :Category rm                            : |:Category-rm|
+            :Font ls                                : |:Font-ls|
+            :Font *                                 : |:Font-star|
+            :Catalog                                : |:Catalog|
+            :Catalog ls                             : |:Catalog-ls|
+            :Catalog rm                             : |:Catalog-rm|
         7. Mappings.................................: |fontcatalog-mappings|
         8. ChangeLog................................: |fontcatalog-changes|
         9. To do....................................: |fontcatalog-todo|
@@ -165,7 +168,7 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         Show the current selected font name and the categories it is bound to.
         The output would be:
 >
-        guifont is "DeJaVu Sans Mono:h12" in bold, italic, regular
+        guifont "DeJaVu Sans Mono:h12" in bold, italic, regular
 <
 
                                                                    *:Font-add*
@@ -176,7 +179,6 @@ License:    This plugin is under GPLv3 license.  This basically means that you
 >
         :Font add light bold
 <
-
                                                                     *:Font-rm*
 :Font rm [category] [...]
         Unbind the current font from one of more categories.  This command can
@@ -193,13 +195,23 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         the  catalog.  This way,  the  font will  not be  listed in  any other
         command any more.
 
+                                                                *:Font-remove*
+:Font remove {font-name}
+        Completely remove a font from  the catalog.  This command required the
+        font name to be typed (or  selected) in the command line.  The purpose
+        of this  command is remove a  font that was possibly  removed from the
+        system. Them it cannot be selected anymore.
+>
+        :Font remove UnExistingFont:h12
+<
                                                                    *:Font-set*
 :Font set {font-name}
          Selects a font to be used in GUI Vim. This is like typing the command
          `:set  guifont=DeJaVu\  Sans\  Mono:h12`  in  the  command line.  The
          advantage  of using  this command  is  that  it  provides completion.
          Typing <C-D>  or <TAB> after `:Font  set` will list all  fonts in the
-         catalog.
+         catalog.  Font with  spaces in name  doesn't need to  be scaped.  The
+         plugin does this.
 
                                                                     *:Font-ls*
 :Font ls [category]
@@ -216,27 +228,36 @@ License:    This plugin is under GPLv3 license.  This basically means that you
         2: Inconsolata:h14      in bold, regular
         Type the font number to set it (zero to cancel):
 <
+                                                                  *:Font-star*
+:Font *
+        Shows the system font list dialog so a font that is not in catalog can
+        be  chosen.  This is  the same  as type  de command  ':set guifont=*'.
+        Notice that the  selected font will not be  added to the catalog.  You
+        should do this along if you wanted.
+>
+        :Font *
+<
+                                                                    *:Catalog*
+:Catalog
+        The ':Catalog' command  alone provides the same output  as the |:Font|
+        command alone.  Showing the current  selected font name and categories
+        bound to it.  The ':Catalog' command provides some options allowing to
+        performe others operations, as follows.
 
-                                                                   *:Category*
-:Category
-        The ':Category' command alone provides  the same output as the |:Font|
-        command alone.  Listing the current  selected font name and categories
-        bound to it. The ':Category' command provides some options allowing to
-        performe others operations.
-
-                                                                *:Category-ls*
-:Category ls [category]
+                                                                 *:Catalog-ls*
+:Catalog ls [category]
         List all categories in the  catalog,  together with the fonts bound to
         it.  When [category] is provided,  only that category is listed.  More
         than one category can be provided.
 >
-        :Category ls bold italic
+        :Catalog ls bold italic
 <
         Would list 'bold' and 'italic' categories with the fonts bound to it.
 
-                                                                *:Category-rm*
-:Category rm {category}
-        Remove a category from the catalog.
+                                                                *:Catalog-rm*
+:Catalog rm {category}
+        Remove a category from the catalog. The {category} is mandatory. <C-D>
+        or <TAB> will list all categories in the catalog.
 
 ==============================================================================
 7. Mappings                                             *fontcatalog-mappings*
