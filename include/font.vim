@@ -135,6 +135,9 @@ export def Current(font: string): dict<any>
   const catalogFolder = config.Check()
   const categoryList  = file.CatalogList(catalogFolder)
 
+  :echomsg 'font:Current("' .. font .. '")'
+  :echomsg '\tcategoryList: ' .. categoryList->join(', ')
+
   var fontList: list<string>
   var categories: list<string>
   var result: dict<any>
