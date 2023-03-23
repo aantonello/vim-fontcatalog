@@ -176,9 +176,11 @@ enddef
 
 # Select a font to be used in the GUI.
 # @param fontName Required. Font name to be selected.
+# @param default Optional. When TRUE we are setting a default or last used
+# font. In this scenario, we don't write the font in the history.
 # @return Nothing.
 # ----------------------------------------------------------------------------
-export def Set(fontName: string): void
+export def Set(fontName: string, default = false): void
   if strlen(fontName) == 0
     return
   endif
@@ -186,8 +188,11 @@ export def Set(fontName: string): void
   try
     :execute 'silent set guifont=' .. fontName
 
-    # Also write the name in the 'lastused' record.
-    font.LastUsed(fontName)
+    # Also write the name in the 'lastused' record, when this is not a default
+    # font or last used one.
+    if !default
+      font.LastUsed(fontName)
+    endif
   catch
     :echomsg v:exception
   endtry

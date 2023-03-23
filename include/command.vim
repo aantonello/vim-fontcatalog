@@ -191,14 +191,14 @@ export def SetDefault()
   # last used font.
   var fontName = get(g:, 'fc_DefaultFont', '')
   if strlen(fontName) > 0
-    font.Set(fontName)
+    font.Set(fontName, true)
     return
   endif
 
   # Check whether we have a last used font.
   fontName = font.GetLastUsed()
   if strlen(fontName) > 0
-    font.Set(fontName)
+    font.Set(fontName, true)
   endif
 enddef
 
