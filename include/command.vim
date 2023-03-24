@@ -115,7 +115,7 @@ export def Font(subCmd = '', categories: list<string> = []): void
   if strlen(subCmd) == 0
     # No subcommand given. Show the current font properties.
     try
-      :echomsg 'guifont ' .. font.FormattedInfo()
+      :echomsg 'GUIFont: ' .. font.FormattedInfo()
     catch
       :echomsg v:exception
     finally

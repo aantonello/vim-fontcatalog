@@ -122,10 +122,11 @@ export def List(categories: list<string> = []): void
 
   const answer = input(output->join("\n"), '')
   if answer != '0' && answer != ''
-    :echo "\n"
     index = str2nr(answer, 10) - 1
     if index >= 0 && index < limit
       Set(names[index])
+    else
+      :echo "\nInvalid number!"
     endif
   endif
 
@@ -186,7 +187,7 @@ export def Set(fontName: string, default = false): void
   endif
 
   try
-    :execute 'silent set guifont=' .. fontName .. '<CR>'
+    :execute 'set guifont=' .. escape(fontName, ' ')
 
     # Also write the name in the 'lastused' record, when this is not a default
     # font or last used one.
