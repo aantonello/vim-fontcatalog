@@ -186,7 +186,7 @@ export def Set(fontName: string, default = false): void
   endif
 
   try
-    :execute 'silent set guifont=' .. fontName
+    :execute 'silent set guifont=' .. fontName .. '<CR>'
 
     # Also write the name in the 'lastused' record, when this is not a default
     # font or last used one.
