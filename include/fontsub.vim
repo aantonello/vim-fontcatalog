@@ -54,7 +54,6 @@ export def FormattedInfo(fontName: string = ''): string
 
   # If we reach here the font wasn't found in the catalog.
   throw 'Font "' .. namedFont .. '" not found in catalog!'
-  return ''
 enddef
 
 # Adds the current selected font in one or more categories.
