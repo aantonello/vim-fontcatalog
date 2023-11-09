@@ -117,13 +117,25 @@ export def List(categories: list<string> = []): void
     index = index + 1
   endwhile
 
-  output->add('Type a number to set the GUI font (<ESC> to cancel): ')
+  output->add('Type <number> to set the font, y<number> to yank the name, or <ESC>: ')
 
   const answer = input(output->join("\n"), '')
   if answer != '0' && answer != ''
-    index = str2nr(answer, 10) - 1
-    if index >= 0 && index < limit
-      Set(names[index])
+    if answer =~? "y\\d\\+"
+      index = str2nr(strpart(answer, 1), 10) - 1
+      if index >= 0 && index < limit
+        setreg('+', names[index], 'c')
+        :echo "\nFont '" .. names[index] .. "' copied to unnamed (+) register"
+      else
+        :echo "\nInvalid number!"
+      endif
+    elseif answer =~? "\\d\\+"
+      index = str2nr(answer, 10) - 1
+      if index >= 0 && index < limit
+        Set(names[index])
+      else
+        :echo "\nInvalid number!"
+      endif
     else
       :echo "\nInvalid number!"
     endif

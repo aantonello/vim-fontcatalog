@@ -22,7 +22,7 @@ let g:gui_lines    = 99                       " Startup height
 let g:color_light  = 'habiLight'
 let g:color_night  = 'desertEx'
 
-let g:fc_DefaultFont='BlexMonoNerdFontComplete-:h12'
+let g:fc_DefaultFont='IosevkaNF-Light:h13'
 let g:coc_explorer_width = 48
 let g:NERDTreeWinSize = 48
 
